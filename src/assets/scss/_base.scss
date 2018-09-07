@@ -1,0 +1,43 @@
+//base
+
+/*common*/
+
+.pull-right {
+  float: right !important;
+}
+
+.pull-left {
+  float: left !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+.show {
+  display: block !important;
+}
+
+.clearfix:after,
+.clearfix:before {
+  content: " ";
+  display: table;
+  clear: both;
+}
+
+.one-line {
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.show-table {
+  display:table;
+  width: 100%;
+  height: 100%;
+}
+
+.show-cell {
+  display:table-cell;
+  vertical-align: middle;
+}
