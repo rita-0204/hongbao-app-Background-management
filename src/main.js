@@ -3,27 +3,41 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from '@/store'                   // api: https://github.com/vuejs/vuex
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import VueCookie from 'vue-cookie'            // api: https://github.com/alfhen/vue-cookie
+import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
+import { isAuth } from '@/utils'
+import cloneDeep from 'lodash/cloneDeep'
+
+
+Vue.use(ElementUI);
+Vue.use(VueCookie)
 
 Vue.config.productionTip = false
 
 import infiniteScroll from 'vue-infinite-scroll'
 Vue.use(infiniteScroll);
 
-import axios from 'axios'
-var instance = axios.create({
-  baseURL: 'http://msspsvr.emarbox.com',
-  timeout: 8000,
-  headers: {
-    'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-  }
-});
-Vue.prototype.$http = instance;
+
+// 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock
+if (process.env.NODE_ENV !== 'production') {
+    require('@/mock')
+}
+// 挂载全局
+Vue.prototype.$http = httpRequest // ajax请求方法
+Vue.prototype.isAuth = isAuth     // 权限方法
+
+// 保存整站vuex本地储存初始状态
+window.SITE_CONFIG['storeState'] = cloneDeep(store.state)
+
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  axios,
+  store,
   components: { App },
   template: '<App/>'
 })

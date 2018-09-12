@@ -1,23 +1,33 @@
 <template>
   <div class="home">
-
+    <HomeNavbar></HomeNavbar>
+    <HomeSilderbar></HomeSilderbar>
+    <HomeContent></HomeContent>
   </div>
 </template>
 
 <script>
+  import HomeNavbar from './home-navbar'
+  import HomeSilderbar from './home-silderbar'
+  import HomeContent from './home-content'
   export default {
-  name: 'home',
-  data () {
-    return {
+      name: 'home',
+      data () {
+        return {
 
-    }
-  },
-  created() {
+        }
+      },
+      components:{
+          HomeNavbar,
+          HomeSilderbar,
+          HomeContent
+      },
+      created() {
 
-  },
-  methods: {
+      },
+      methods: {
 
-  }
+      }
 }
 </script>
 
