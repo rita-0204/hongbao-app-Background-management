@@ -1,5 +1,6 @@
 <template>
   <div class="mod-menu">
+    dddd
     <el-form :inline="true" :model="dataForm">
       <el-form-item>
         <el-button v-if="isAuth('sys:menu:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
@@ -16,13 +17,13 @@
         width="80"
         label="ID">
       </el-table-column>
-      <!--<table-tree-column-->
-        <!--prop="name"-->
-        <!--header-align="center"-->
-        <!--treeKey="menuId"-->
-        <!--width="150"-->
-        <!--label="名称">-->
-      <!--</table-tree-column>-->
+      <table-tree-column
+        prop="name"
+        header-align="center"
+        treeKey="menuId"
+        width="150"
+        label="名称">
+      </table-tree-column>
       <el-table-column
         prop="parentName"
         header-align="center"
@@ -35,7 +36,7 @@
         align="center"
         label="图标">
         <template slot-scope="scope">
-          <!--<icon-svg :name="scope.row.icon || ''"></icon-svg>-->
+          <icon-svg :name="scope.row.icon || ''"></icon-svg>
         </template>
       </el-table-column>
       <el-table-column
@@ -89,7 +90,7 @@
 </template>
 
 <script>
-//  import TableTreeColumn from '@/components/table-tree-column'
+  import TableTreeColumn from '@/components/table-tree-column'
   import AddOrUpdate from './menu-add-or-update'
   import { treeDataTranslate } from '@/utils'
   export default {
