@@ -1,6 +1,6 @@
 <template>
   <div>
-    图文列表
+    推送管理
   </div>
 </template>
 

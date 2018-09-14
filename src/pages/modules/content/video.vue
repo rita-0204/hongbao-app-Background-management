@@ -1,6 +1,6 @@
 <template>
   <div>
-    图文爬虫管理
+    视频爬虫管理
   </div>
 </template>
 

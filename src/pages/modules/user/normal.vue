@@ -1,6 +1,6 @@
 <template>
   <div>
-    举报管理
+    普通用户
   </div>
 </template>
 

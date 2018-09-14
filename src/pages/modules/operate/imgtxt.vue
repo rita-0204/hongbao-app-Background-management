@@ -1,6 +1,6 @@
 <template>
   <div>
-    频道管理
+    图文列表
   </div>
 </template>
 

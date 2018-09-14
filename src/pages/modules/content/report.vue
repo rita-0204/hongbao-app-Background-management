@@ -1,6 +1,6 @@
 <template>
   <div>
-    视频爬虫管理
+    举报管理
   </div>
 </template>
 

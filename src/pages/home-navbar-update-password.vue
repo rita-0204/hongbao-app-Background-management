@@ -93,11 +93,11 @@
                   type: 'success',
                   duration: 1500,
                   onClose: () => {
-                    this.visible = false
+                    this.visible = false  //关闭弹窗
                     this.$nextTick(() => {
                       this.mainTabs = []
                       clearLoginInfo()
-                      this.$router.replace({ name: 'login' })
+                      this.$router.replace({ name: 'login' }) //提交成功跳转到登陆页重新登陆
                     })
                   }
                 })

@@ -48,7 +48,7 @@
 
     },
     methods: {
-      // 提交表单
+      // 提交表单  1、提交用户名和密码，后台返token给我，我将token 存到cookie  2、成功后跳转到主页home
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
@@ -57,8 +57,8 @@
               method: 'post',
               data: this.$http.adornData({
                 'username': this.dataForm.userName,
-                'password': this.dataForm.password,
-                'uuid': this.dataForm.uuid
+                'password': this.dataForm.password
+//                'uuid': this.dataForm.uuid
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

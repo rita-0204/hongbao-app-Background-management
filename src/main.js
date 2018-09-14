@@ -2,14 +2,14 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
+import router from './router'                 //路由
 import store from '@/store'                   // api: https://github.com/vuejs/vuex
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-import VueCookie from 'vue-cookie'            // api: https://github.com/alfhen/vue-cookie
-import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
+import ElementUI from 'element-ui';         //element组件
+import 'element-ui/lib/theme-chalk/index.css';  //样式得单独引入
+import VueCookie from 'vue-cookie'            // api: https://github.com/alfhen/vue-cookie 缓存
+import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios 请求
 import { isAuth } from '@/utils'
-import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash/cloneDeep'  //本地储存
 
 
 Vue.use(ElementUI);
@@ -17,11 +17,8 @@ Vue.use(VueCookie)
 
 Vue.config.productionTip = false
 
-import infiniteScroll from 'vue-infinite-scroll'
-Vue.use(infiniteScroll);
 
-
-// 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock
+// 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock   index.html引入
 if (process.env.NODE_ENV !== 'production') {
     require('@/mock')
 }

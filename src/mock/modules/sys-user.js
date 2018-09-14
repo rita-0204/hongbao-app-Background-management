@@ -4,14 +4,14 @@ import Mock from 'mockjs'
 var dataList = []
 for (let i = 0; i < Math.floor(Math.random() * 10 + 1); i++) {
   dataList.push(Mock.mock({
-    'userId': '@increment',
-    'username': '@name',
+    'userId': '@increment',  //用户id
+    'username': '@name',   //用户名账号
     'email': '@email',
     'mobile': /^1[0-9]{10}$/,
     'status': 1,
     'roleIdList': null,
     'createUserId': 1,
-    'createTime': 'datetime'
+    'createTime': 'datetime'  //创建时间
   }))
 }
 

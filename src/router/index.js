@@ -45,7 +45,7 @@ const mainRoutes = {
 }
 
 const router = new Router({
-  mode: 'hash',
+  mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
   isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
   routes: globalRoutes.concat(mainRoutes)
@@ -92,6 +92,7 @@ function fnCurrentRouteType (route) {
       return 'global'
     } else if (globalRoutes[i].children && globalRoutes[i].children.length >= 1) {
       temp = temp.concat(globalRoutes[i].children)
+      console.log(temp,67676)
     }
   }
   return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'home'
@@ -143,11 +144,12 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
       mainRoutes,
       { path: '*', redirect: { name: '404' } }
     ])
+    //redirect 开发中有时候我们虽然设置的路径不一致，但是我们希望跳转到同一个页面，或者说是打开同一个组件。这时候我们就用到了路由的重新定向redirect参数
     sessionStorage.setItem('dynamicMenuRoutes', JSON.stringify(mainRoutes.children || '[]'))
-    console.log('\n')
-    console.log('%c!<-------------------- 动态(菜单)路由 s -------------------->', 'color:blue')
-    console.log(mainRoutes.children)
-    console.log('%c!<-------------------- 动态(菜单)路由 e -------------------->', 'color:blue')
+    // console.log('\n')
+    // console.log('%c!<-------------------- 动态(菜单)路由 s -------------------->', 'color:blue')
+    // console.log(mainRoutes.children)
+    // console.log('%c!<-------------------- 动态(菜单)路由 e -------------------->', 'color:blue')
   }
 }
 

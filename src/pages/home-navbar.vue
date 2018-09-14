@@ -18,43 +18,59 @@
         </el-menu-item>
       </el-menu>
     </div>
-    <password></password>
+    <!--弹窗-->
+    <password v-show="flagShow" ref="updatePassowrd"></password>
   </nav>
 </template>
 
 <script>
   import Password from './home-navbar-update-password.vue'
+  import { clearLoginInfo } from '@/utils'
 
   export default {
       data() {
           return {
-              activeIndex: '1',
-              activeIndex2: '1',
-              userName:''
+              flagShow: false
           };
       },
       components:{
         Password
       },
-      created(){
-        this.getlist();
-      },
-        methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            getlist(){
-              this.$http({
-                url: this.$http.adornUrl('/sys/user/info'),
-                method: 'get'
-              }).then(({data}) => {
-                this.userName = data.user.username
-              })
-            },
-            updatePasswordHandle(){
-
-            }
+      computed:{
+        userName:{
+          get(){
+            return this.$store.state.user.name
+          }
         }
+      },
+      methods: {
+        // 修改密码
+          updatePasswordHandle(){
+            this.flagShow = true
+            this.$nextTick(() => {
+              this.$refs.updatePassowrd.init()  //父调子的方法用ref
+            })
+          },
+        // 退出
+          logoutHandle () {
+            this.$confirm(`确定进行[退出]操作?`, '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.$http({
+                url: this.$http.adornUrl('/sys/logout'),
+                method: 'post',
+                data: this.$http.adornData()
+              }).then(({data}) => {
+                if (data && data.code === 0) {
+                  clearLoginInfo()  //清除登录信息及token
+                  this.$router.push({ name: 'login' })  //重新跳转到登录页
+                }
+              })
+            }).catch(() => {})
+          }
+      }
     }
 </script>
 

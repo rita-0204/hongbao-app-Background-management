@@ -1,6 +1,6 @@
 <template>
   <div>
-    图文列表
+    视频列表
   </div>
 </template>
 

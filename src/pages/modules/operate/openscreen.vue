@@ -1,6 +1,6 @@
 <template>
   <div>
-    推送管理
+    开屏管理
   </div>
 </template>
 

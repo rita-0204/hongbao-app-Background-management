@@ -1,6 +1,6 @@
 <template>
   <div>
-    添加分类
+    图文爬虫管理
   </div>
 </template>
 

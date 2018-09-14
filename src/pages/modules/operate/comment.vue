@@ -1,6 +1,6 @@
 <template>
   <div>
-    视频列表
+    评论审核
   </div>
 </template>
 

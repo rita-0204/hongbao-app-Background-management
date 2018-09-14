@@ -381,119 +381,109 @@ var dataList = [
 var navDataList = [
   {
     'menuId': 1,
-    'parentId': 0,
-    'parentName': null,
-    'name': '系统管理',
+    'name': '内容管理',
     'url': null,
-    'perms': null,
-    'type': 0,
-    'icon': 'system',
-    'orderNum': 0,
-    'open': null,
     'list': [
       {
         'menuId': 2,
-        'parentId': 1,
-        'parentName': null,
-        'name': '管理员列表',
-        'url': 'sys/user',
-        'perms': null,
-        'type': 1,
-        'icon': 'admin',
-        'orderNum': 1,
-        'open': null,
-        'list': null
+        'name': '分类管理',
+        'url': 'content/classify'
       },
       {
         'menuId': 3,
-        'parentId': 1,
-        'parentName': null,
-        'name': '角色管理',
-        'url': 'sys/role',
-        'perms': null,
-        'type': 1,
-        'icon': 'role',
-        'orderNum': 2,
-        'open': null,
-        'list': null
+        'name': '图文爬虫管理',
+        'url': 'content/imgtxt'
       },
       {
         'menuId': 4,
-        'parentId': 1,
-        'parentName': null,
-        'name': '菜单管理',
-        'url': 'sys/menu',
-        'perms': null,
-        'type': 1,
-        'icon': 'menu',
-        'orderNum': 3,
-        'open': null,
-        'list': null
+        'name': '视频爬虫管理',
+        'url': 'content/video'
       },
       {
         'menuId': 5,
-        'parentId': 1,
-        'parentName': null,
-        'name': 'SQL监控',
-        'url': 'http://localhost:8080/renren-fast/druid/sql.html',
-        'perms': null,
-        'type': 1,
-        'icon': 'sql',
-        'orderNum': 4,
-        'open': null,
-        'list': null
+        'name': 'PGC爬虫管理',
+        'url': 'content/pgc'
       },
       {
         'menuId': 6,
-        'parentId': 1,
-        'parentName': null,
-        'name': '定时任务',
-        'url': 'job/schedule',
-        'perms': null,
-        'type': 1,
-        'icon': 'job',
-        'orderNum': 5,
-        'open': null,
-        'list': null
+        'name': '举报管理',
+        'url': 'content/report'
+      }
+    ]
+  },
+  {
+    'menuId': 7,
+    'name': '运营管理',
+    'url': null,
+    'list': [
+      {
+        'menuId': 8,
+        'name': '频道管理',
+        'url': 'operate/channel'
       },
       {
-        'menuId': 27,
-        'parentId': 1,
-        'parentName': null,
-        'name': '参数管理',
-        'url': 'sys/config',
-        'perms': 'sys:config:list,sys:config:info,sys:config:save,sys:config:update,sys:config:delete',
-        'type': 1,
-        'icon': 'config',
-        'orderNum': 6,
-        'open': null,
-        'list': null
+        'menuId': 9,
+        'name': '图文列表',
+        'url': 'operate/imgtxt'
       },
       {
-        'menuId': 30,
-        'parentId': 1,
-        'parentName': null,
-        'name': '文件上传',
-        'url': 'oss/oss',
-        'perms': 'sys:oss:all',
-        'type': 1,
-        'icon': 'oss',
-        'orderNum': 6,
-        'open': null,
-        'list': null
+        'menuId': 10,
+        'name': '视频列表',
+        'url': 'operate/viedolist'
       },
       {
-        'menuId': 29,
-        'parentId': 1,
-        'parentName': null,
-        'name': '系统日志',
-        'url': 'sys/log',
-        'perms': 'sys:log:list',
-        'type': 1,
-        'icon': 'log',
-        'orderNum': 7,
-        'open': null,
-        'list': null
+        'menuId': 11,
+        'name': '评论审核',
+        'url': 'operate/comment'
+      },
+      {
+        'menuId': 12,
+        'name': '推送管理',
+        'url': 'operate/push'
+      },
+      {
+        'menuId': 13,
+        'name': '开屏管理',
+        'url': 'operate/openscreen'
+      }
+    ]
+  },
+  {
+    'menuId': 14,
+    'name': '用户管理',
+    'url': null,
+    'list': [
+      {
+        'menuId': 15,
+        'name': 'PGC用户',
+        'url': 'user/pgc'
+      },
+      {
+        'menuId': 16,
+        'name': '普通用户',
+        'url': 'user/normal'
+      }
+    ]
+  },
+  {
+    'menuId': 17,
+    'name': '系统管理',
+    'url': null,
+    'list': [
+      {
+        'menuId': 18,
+        'name': '资源管理',
+        'url': 'sys/menu'
+      },
+      {
+        'menuId': 19,
+        'name': '角色管理',
+        'url': 'sys/role'
+      },
+      {
+        'menuId': 20,
+        'name': '用户管理',
+        'url': 'sys/user'
       }
     ]
   }
@@ -508,42 +498,7 @@ export function nav () {
     data: {
       'msg': 'success',
       'code': 0,
-      'menuList': navDataList,
-      'permissions': [
-        'sys:schedule:info',
-        'sys:menu:update',
-        'sys:menu:delete',
-        'sys:config:info',
-        'sys:menu:list',
-        'sys:config:save',
-        'sys:config:update',
-        'sys:schedule:resume',
-        'sys:user:delete',
-        'sys:config:list',
-        'sys:user:update',
-        'sys:role:list',
-        'sys:menu:info',
-        'sys:menu:select',
-        'sys:schedule:update',
-        'sys:schedule:save',
-        'sys:role:select',
-        'sys:user:list',
-        'sys:menu:save',
-        'sys:role:save',
-        'sys:schedule:log',
-        'sys:role:info',
-        'sys:schedule:delete',
-        'sys:role:update',
-        'sys:schedule:list',
-        'sys:user:info',
-        'sys:schedule:run',
-        'sys:config:delete',
-        'sys:role:delete',
-        'sys:user:save',
-        'sys:schedule:pause',
-        'sys:log:list',
-        'sys:oss:all'
-      ]
+      'menuList': navDataList
     }
   }
 }
