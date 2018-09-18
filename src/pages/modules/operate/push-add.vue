@@ -1,28 +1,61 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增' : '添加推送'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="dataForm.roleName" placeholder="角色名称"></el-input>
+      <el-form-item label="标题" prop="roleName">
+        <el-input v-model="dataForm.remark"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+      <el-form-item label="内容" prop="roleName">
+        <el-input
+          v-model="dataForm.roleName"
+          type="textarea"
+          :rows="2"
+          placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="设备" prop="roleName">
+        <el-radio-group v-model="radio2">
+          <el-radio :label="3">全部</el-radio>
+          <el-radio :label="6">ios</el-radio>
+          <el-radio :label="9">Android</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="类型" prop="roleName">
+        <el-radio v-model="radio" label="1">图文</el-radio>
+        <el-radio v-model="radio" label="2">视频</el-radio>
+        <el-input v-model="dataForm.remark" placeholder="输入图文ID"></el-input>
+      </el-form-item>
+      <el-form-item label="发送" prop="roleName">
+        <el-radio v-model="radio3" label="1">立即</el-radio>
+        <el-radio v-model="radio3" label="2">定时</el-radio>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button @click="visible = false">返回</el-button>
+      <el-button type="primary" @click="dataFormSubmit()">保存</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-  import { treeDataTranslate } from '@/utils'
   export default {
     data () {
       return {
+        textarea:'',
+        radio:"1",
+        radio2:3,
+        radio3:'',
+        value:'',
+        options:[{
+          value: '选项1',
+          label: '一级分类'
+        }],
+        options1:[{
+          value: '选项1',
+          label: '二级分类'
+        }],
+        checkList: [],
         visible: false,
         menuList: [],
         menuListTreeProps: {
@@ -52,7 +85,7 @@
 //        }).then(({data}) => {
 //          this.menuList = treeDataTranslate(data, 'menuId')
 //        }).then(() => {
-          this.visible = true
+        this.visible = true
 //          this.$nextTick(() => {
 //            this.$refs['dataForm'].resetFields()
 //            this.$refs.menuListTree.setCheckedKeys([])

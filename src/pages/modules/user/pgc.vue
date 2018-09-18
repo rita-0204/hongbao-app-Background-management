@@ -1,12 +1,17 @@
 <template>
   <div class="mod-role">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item>
+        <el-button v-if="isAuth('')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+      </el-form-item>
+    </el-form>
     <div class="main-title-top">
       <label><span>用户ID</span><input type="text"></label>
       <label><span>用户昵称</span><input type="text"></label>
       <div class="btnCheck">查 询</div>
     </div>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
-      <el-tab-pane label="评论审核" name="first">
+      <el-tab-pane label="PGC用户" name="first">
         <el-table
           :data="dataList"
           border
@@ -23,43 +28,50 @@
             prop="name"
             header-align="center"
             align="center"
-            width="60"
-            label="用户">
+            width="100"
+            label="用户ID">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
             width="150"
-            label="标题">
+            label="用户昵称">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="200"
-            label="评论内容">
+            width="60"
+            label="性别">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="200"
-            label="内容标题">
+            width="60"
+            label="类型">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="50"
-            label="内容类型">
+            width="100"
+            label="一级分类">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
             width="160"
-            label="评论时间">
+            label="分级">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="200"
+            label="爬虫链接">
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -84,10 +96,12 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
+  import AddOrUpdate from './pgc-add'
   export default {
     data () {
       return {
@@ -99,10 +113,14 @@
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
+        addOrUpdateVisible: false,
         dataListSelections: [],
         activeName2: 'first',
         typeName: 0
       }
+    },
+    components: {
+      AddOrUpdate
     },
     activated () {
       this.getDataList()
@@ -122,6 +140,13 @@
           this.typeName = 1
         }
         this.getDataList ()
+      },
+      // 新增 / 修改
+      addOrUpdateHandle (id) {
+        this.addOrUpdateVisible = true
+        this.$nextTick(() => {
+          this.$refs.addOrUpdate.init(id)
+        })
       },
       // 获取数据列表
       getDataList () {

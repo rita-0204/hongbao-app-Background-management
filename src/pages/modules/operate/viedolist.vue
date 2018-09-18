@@ -29,9 +29,15 @@
         </label>
         <label class="content-class">
           <span>发布时间</span>
-          <input type="text">
-          <i>-</i>
-          <input type="text">
+          <div class="block">
+            <el-date-picker
+              v-model="value6"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </div>
         </label>
         <div class="btnCheck">查 询</div>
     </div>
@@ -146,10 +152,11 @@
 </template>
 
 <script>
-  import AddOrUpdate from './viedolist-update'
+  import AddOrUpdate from './viedolist-edit'
   export default {
     data () {
       return {
+        value6: '',
         dataForm: {
           roleName: ''
         },
@@ -278,7 +285,7 @@
     width: 100%;
     height: 100px;
       label{
-        width:210px;
+        width:178px;
         margin-bottom:10px;
         float:left;
         span{
@@ -296,7 +303,7 @@
           border: 1px solid #dcdcdc;
         }
         select{
-          padding:0 6%;
+          padding:0 8.6%;
           width:auto;
           option{
             text-align: center;
@@ -304,10 +311,15 @@
         }
       }
     .content-class{
-      width:330px;
+      width:495px;
       input{
         width:118px;
       }
+  }
+  .block{
+    width: 425px;
+    float: right;
+    height: 23px;
   }
   .btnCheck{
     float: right;
@@ -316,7 +328,7 @@
     padding: 6px 15px;
     border-radius: 100px;
     cursor: pointer;
-    margin-top: -20px;
+    margin-top: -65px;
   }
   }
 </style>
