@@ -1,65 +1,80 @@
 <template>
   <div class="mod-role">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.roleName" placeholder="角色名称" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
-      <el-table-column
-        type="selection"
-        header-align="center"
-        align="center"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        prop="roleId"
-        header-align="center"
-        align="center"
-        width="80"
-        label="ID">
-      </el-table-column>
-      <el-table-column
-        prop="roleName"
-        header-align="center"
-        align="center"
-        label="角色名称">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
-          <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="main-title-top">
+      <label><span>用户ID</span><input type="text"></label>
+      <label><span>用户昵称</span><input type="text"></label>
+      <div class="btnCheck">查 询</div>
+    </div>
+    <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
+      <el-tab-pane label="评论审核" name="first">
+        <el-table
+          :data="dataList"
+          border
+          v-loading="dataListLoading"
+          style="width: 100%;">
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="100"
+            label="用户头像">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="60"
+            label="用户">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="150"
+            label="标题">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="200"
+            label="评论内容">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="200"
+            label="内容标题">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="50"
+            label="内容类型">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            header-align="center"
+            align="center"
+            width="160"
+            label="评论时间">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            header-align="center"
+            align="center"
+            width="100"
+            label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
+              <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -69,13 +84,10 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './role-add-or-update'
   export default {
     data () {
       return {
@@ -88,34 +100,43 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false
+        activeName2: 'first',
+        typeName: 0
       }
-    },
-    components: {
-      AddOrUpdate
     },
     activated () {
       this.getDataList()
     },
     methods: {
+      formatSex: function (row, column, cellValue) {
+        if (cellValue == "1"){
+          return '下线';
+        }else if (cellValue == "0"){
+          return '正常';
+        }
+      },
+      handleClick(tab, event) {
+        if(tab.name == 'first'){
+          this.typeName = 0;
+        }else if(tab.name == 'second'){
+          this.typeName = 1
+        }
+        this.getDataList ()
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/role/list'),
+          url: this.$http.adornUrl('/mcn/getType'),
           method: 'get',
           params: this.$http.adornParams({
-            'page': this.pageIndex,
-            'limit': this.pageSize,
-            'roleName': this.dataForm.roleName
+            'type': this.typeName,
           })
         }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
+          if (data.resultCode == 0) {
+            this.dataList = data.data
           } else {
             this.dataList = []
-            this.totalPage = 0
           }
           this.dataListLoading = false
         })
@@ -130,48 +151,46 @@
       currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
-      },
-      // 多选
-      selectionChangeHandle (val) {
-        this.dataListSelections = val
-      },
-      // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
-        this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
-        })
-      },
-      // 删除
-      deleteHandle (id) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.roleId
-        })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/sys/role/delete'),
-            method: 'post',
-            data: this.$http.adornData(ids, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }).catch(() => {})
       }
     }
   }
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss" type="stylesheet/scss" scoped>
+  .mod-role{
+  .tabs-icon{
+    position: static;
+  }
+  }
+  .btns{
+    margin-left:0;
+  }
+  .main-title-top{
+    width: 100%;
+    height: 50px;
+  label {
+    width: 210px;
+    margin-bottom: 10px;
+    float: left;
+  span {
+    margin-right: 10px;
+  }
+  input {
+    display: inline-block;
+    width: 80px;
+    height: 20px;
+    border: 1px solid #dcdcdc;
+  }
+  }
+  .btnCheck{
+    float: left;
+    background: #409EFF;
+    color: #fff;
+    padding: 6px 15px;
+    border-radius: 100px;
+    cursor: pointer;
+    margin-top: -5px;
+  }
+  }
+</style>

@@ -9,7 +9,8 @@ for (let i = 0; i < Math.floor(Math.random() * 10 + 1); i++) {
     'remark': '@csentence',
     'createUserId': 1,
     'menuIdList': '@range(1, 10, 2)',
-    'createTime': '@datetime'
+    'createTime': '@datetime',
+    'state':'下线'
   }))
 }
 
@@ -17,7 +18,7 @@ for (let i = 0; i < Math.floor(Math.random() * 10 + 1); i++) {
 export function list () {
   return {
     // isOpen: false,
-    url: '/sys/role/list',
+    url: '/channel/list',
     type: 'get',
     data: {
       'msg': 'success',
@@ -87,11 +88,11 @@ export function update () {
   }
 }
 
-// 删除角色
+// 上线
 export function del () {
   return {
     // isOpen: false,
-    url: '/sys/role/delete',
+    url: '/channel/state',
     type: 'post',
     data: {
       'msg': 'success',

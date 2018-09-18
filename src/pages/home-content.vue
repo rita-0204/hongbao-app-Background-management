@@ -128,11 +128,9 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .site-content{
-  position: fixed;
-  left:230px;
-  top:50px;
-  right:0;
+  margin-left:230px;
   min-height:100%;
   background:#f1f4f5;
+  padding:105px 15px 15px;
 }
 </style>

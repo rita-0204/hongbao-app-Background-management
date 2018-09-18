@@ -380,7 +380,7 @@ var dataList = [
 ]
 var navDataList = [
   {
-    'menuId': 1,
+    'id': 1,
     'name': '内容管理',
     'url': null,
     'list': [
@@ -493,8 +493,8 @@ var navDataList = [
 export function nav () {
   return {
     // isOpen: false,
-    url: '/sys/menu/nav',
-    type: 'get',
+    url: '/controll/getLoginMenu',
+    type: 'post',
     data: {
       'msg': 'success',
       'code': 0,

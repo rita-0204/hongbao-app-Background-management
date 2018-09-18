@@ -116,7 +116,7 @@ input:focus {
 }
 
 body{
-  background: #d2d6de;
+  background:#f1f4f5;
 }
 
 .el-tabs__header{
@@ -129,6 +129,10 @@ body{
   -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 0 6px 0 rgba(0, 0, 0, 0.04);
   background-color: #fff;
+}
+.tabs-icon .el-tabs__header{
+  position: static;
+  box-shadow: none;
 }
 .el-card__body{
   padding:0;
@@ -147,7 +151,4 @@ body{
   line-height: 40px;
   background-color: #f1f4f5;
   cursor: pointer;
-}
-.el-tabs__content{
-  margin: 55px 15px 15px;
 }

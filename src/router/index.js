@@ -45,7 +45,7 @@ const mainRoutes = {
 }
 
 const router = new Router({
-  mode: 'history',
+  mode: 'hash',
   scrollBehavior: () => ({ y: 0 }),
   isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
   routes: globalRoutes.concat(mainRoutes)
@@ -59,16 +59,19 @@ router.beforeEach((to, from, next) => {
     next()
   } else {
     http({
-      url: http.adornUrl('/sys/menu/nav'),
-      method: 'get',
-      params: http.adornParams()
+      url: http.adornUrl('/controll/getLoginMenu'),
+      method: 'post',
+      data: http.adornData({
+        'token': Vue.cookie.get('token')
+      })
     }).then(({data}) => {
-      if (data && data.code === 0) {
-        fnAddDynamicMenuRoutes(data.menuList)
+      if (data.resultCode == 0) {
+        fnAddDynamicMenuRoutes(data.data)
         router.options.isAddDynamicMenuRoutes = true
-        sessionStorage.setItem('menuList', JSON.stringify(data.menuList || '[]'))
+        sessionStorage.setItem('menuList', JSON.stringify(data.data || '[]'))
         sessionStorage.setItem('permissions', JSON.stringify(data.permissions || '[]'))
-        next({ to, replace: true })
+        // next({ path: '/', replace: true })
+        next(to.path)
       } else {
         sessionStorage.setItem('menuList', '[]')
         sessionStorage.setItem('permissions', '[]')
@@ -92,7 +95,6 @@ function fnCurrentRouteType (route) {
       return 'global'
     } else if (globalRoutes[i].children && globalRoutes[i].children.length >= 1) {
       temp = temp.concat(globalRoutes[i].children)
-      console.log(temp,67676)
     }
   }
   return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'home'
@@ -115,7 +117,7 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
         component: null,
         name: menuList[i].url.replace('/', '-'),
         meta: {
-          menuId: menuList[i].menuId,
+          id: menuList[i].id,
           title: menuList[i].name,
           isDynamic: true,
           isTab: true,
@@ -124,8 +126,8 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
       }
       // url以http[s]://开头, 通过iframe展示
       if (isURL(menuList[i].url)) {
-        route['path'] = `i-${menuList[i].menuId}`
-        route['name'] = `i-${menuList[i].menuId}`
+        route['path'] = `i-${menuList[i].id}`
+        route['name'] = `i-${menuList[i].id}`
         route['meta']['iframeUrl'] = menuList[i].url
       } else {
         try {

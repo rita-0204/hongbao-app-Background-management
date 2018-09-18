@@ -10,16 +10,6 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
-      <el-form-item size="mini" label="授权">
-        <el-tree
-          :data="menuList"
-          :props="menuListTreeProps"
-          node-key="menuId"
-          ref="menuListTree"
-          :default-expand-all="true"
-          show-checkbox>
-        </el-tree>
-      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>

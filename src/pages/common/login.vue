@@ -53,20 +53,22 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/sys/login'),
+              url: this.$http.adornUrl('/controll/login'),
               method: 'post',
               data: this.$http.adornData({
                 'username': this.dataForm.userName,
                 'password': this.dataForm.password
-//                'uuid': this.dataForm.uuid
               })
             }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$cookie.set('token', data.token)
+              if (data.resultCode == 0) {
+//                console.log(885,data)
+                this.$cookie.set('token', data.data.token)
                 this.$router.replace({ name: 'home' })
               } else {
                 this.$message.error(data.msg)
               }
+            }).catch(({err}) => {
+              console.log(err)
             })
           }
         })
@@ -80,16 +82,21 @@
   .site-page--login{
     .site-content{
       width:360px;
-      margin: 0 auto;
       text-align: center;
-      padding-top:100px;
+      border-radius: 5px;
+      -moz-border-radius: 5px;
+      background-clip: padding-box;
+      margin: 100px auto;
+      padding: 35px 35px 15px 35px;
+      background: #fff;
+      border: 1px solid #eaeaea;
+      box-shadow: 0 0 25px #cac6c6;
       .login-logo b{
         font-size:35px;
         width:360px;
         font-weight:300;
       }
       .login-main{
-        margin-top:30px;
         background: #fff;
         padding: 20px;
         border-top: 0;

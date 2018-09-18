@@ -83,6 +83,7 @@
     right:0;
     height:50px;
     background:#45c2b5;
+    z-index:900;
     box-shadow: 0 2px 4px rgba(0,0,0,.08);
     .site-navbar-header{
       width:230px;

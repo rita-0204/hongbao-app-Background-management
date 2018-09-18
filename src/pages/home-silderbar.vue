@@ -6,7 +6,7 @@
         class="site-sidebar__menu">
         <sub-menu
           v-for="menu in menuList"
-          :key="menu.menuId"
+          :key="menu.id"
           :menu="menu"
           :dynamicMenuRoutes="dynamicMenuRoutes">
         </sub-menu>
@@ -53,13 +53,12 @@
     created () {
       this.menuList = JSON.parse(sessionStorage.getItem('menuList') || '[]')  //获取导航信息
       this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]') //向子组件传递方法
-      this.routeHandle(this.$route) //动态
+      this.routeHandle(this.$route) //动态 从router.js里动态获取
     },
     methods: {
       // 路由操作
       routeHandle (route) {
         if (route.meta.isTab) { //是否选中
-//          console.log(route.meta,456)
           // tab选中, 不存在先添加
           var tab = this.mainTabs.filter(item => item.name === route.name)[0]
           if (!tab) {
@@ -70,7 +69,7 @@
               }
             }
             tab = {
-              menuId: route.meta.menuId || route.name,
+              id: route.meta.id || route.name,
               name: route.name,
               title: route.meta.title,
               type: isURL(route.meta.iframeUrl) ? 'iframe' : 'module',
@@ -78,7 +77,7 @@
             }
             this.mainTabs = this.mainTabs.concat(tab)
           }
-          this.menuActiveName = tab.menuId + ''  //标签页的id
+          this.menuActiveName = tab.id + ''  //标签页的id
           this.mainTabsActiveName = tab.name  //标签页的name
         }
       }
@@ -90,11 +89,12 @@
 <style lang="scss" type="stylesheet/scss" scoped>
 .sit-silderbar{
   position: fixed;
-  left:0;
-  top:50px;
-  width:230px;
-  height:100%;
-  background:#fff;
+  left: 0;
+  top: 50px;
+  width: 230px;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
   .site-sidebar__inner {
     position: relative;
     z-index: 1;
