@@ -69,14 +69,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="封面" prop="roleName">
-        <el-input v-model="dataForm.remark"></el-input>
+        <croppa v-model="myCroppa" :width="160" :height="90"></croppa>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">返回</el-button>
       <el-button type="primary" @click="dataFormSubmit()">保存</el-button>
     </span>
-    <div style="width:100px;height:100px;background:red;"></div>
   </el-dialog>
 </template>
 
@@ -85,6 +84,7 @@
   export default {
     data () {
       return {
+        myCroppa: {},
         value:'',
         options:[{
           value: '选项1',

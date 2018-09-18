@@ -45,37 +45,7 @@
     methods: {
       init (id) {
         this.dataForm.id = id || 0
-//        this.$http({
-//          url: this.$http.adornUrl('/sys/menu/list'),
-//          method: 'get',
-//          params: this.$http.adornParams()
-//        }).then(({data}) => {
-//          this.menuList = treeDataTranslate(data, 'menuId')
-//        }).then(() => {
-          this.visible = true
-//          this.$nextTick(() => {
-//            this.$refs['dataForm'].resetFields()
-//            this.$refs.menuListTree.setCheckedKeys([])
-//          })
-//        }).then(() => {
-//          if (this.dataForm.id) {
-//            this.$http({
-//              url: this.$http.adornUrl(`/sys/role/info/${this.dataForm.id}`),
-//              method: 'get',
-//              params: this.$http.adornParams()
-//            }).then(({data}) => {
-//              if (data && data.code === 0) {
-//                this.dataForm.roleName = data.role.roleName
-//                this.dataForm.remark = data.role.remark
-//                var idx = data.role.menuIdList.indexOf(this.tempKey)
-//                if (idx !== -1) {
-//                  data.role.menuIdList.splice(idx, data.role.menuIdList.length - idx)
-//                }
-//                this.$refs.menuListTree.setCheckedKeys(data.role.menuIdList)
-//              }
-//            })
-//          }
-//        })
+        this.visible = true
       },
       // 表单提交
       dataFormSubmit () {
@@ -89,7 +59,6 @@
                 'name': this.dataForm.roleName
               })
             }).then(({data}) => {
-              console.log(data,2626)
               if (data.resultCode == 0) {
                 this.$message({
                   message: '操作成功',

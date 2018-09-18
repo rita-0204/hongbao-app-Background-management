@@ -10,12 +10,14 @@ import VueCookie from 'vue-cookie'            // api: https://github.com/alfhen/
 import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios 请求
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'  //本地储存
+import Croppa from 'vue-croppa'
+import 'vue-croppa/dist/vue-croppa.css'
 
 
 
 Vue.use(ElementUI);
 Vue.use(VueCookie)
-
+Vue.use(Croppa)
 Vue.config.productionTip = false
 
 

@@ -22,15 +22,19 @@
         <el-input v-model="dataForm.remark"></el-input>
       </el-form-item>
       <el-form-item label="性别" prop="roleName">
-        <el-radio-group v-model="radio2">
-          <el-radio :label="3">男</el-radio>
-          <el-radio :label="6">女</el-radio>
-          <el-radio :label="9">未知</el-radio>
-        </el-radio-group>
+        <div style="line-height: 38px;">
+          <el-radio-group v-model="radio2">
+            <el-radio :label="3">男</el-radio>
+            <el-radio :label="6">女</el-radio>
+            <el-radio :label="9">未知</el-radio>
+          </el-radio-group>
+        </div>
       </el-form-item>
       <el-form-item label="马甲号" prop="roleName">
-        <el-radio v-model="radio" label="1">是</el-radio>
-        <el-radio v-model="radio" label="2">否</el-radio>
+        <div style="line-height: 38px;">
+          <el-radio v-model="radio" label="1">是</el-radio>
+          <el-radio v-model="radio" label="2">否</el-radio>
+        </div>
       </el-form-item>
       <el-form-item label="分类" prop="roleName">
         <el-select v-model="value" placeholder="选择分类">

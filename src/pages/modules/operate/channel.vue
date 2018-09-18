@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button v-if="isAuth('')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('')" type="primary" @click="addOrUpdateHandle(typeName)">新增</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -145,6 +145,7 @@
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
+            console.log(data)
             this.dataList = data.data
           } else {
             this.dataList = []
