@@ -60,8 +60,9 @@
                 'password': this.dataForm.password
               })
             }).then(({data}) => {
+              console.log(data)
+//              console.log(JSON.parse(data))
               if (data.resultCode == 0) {
-//                console.log(885,data)
                 this.$cookie.set('token', data.data.token)
                 this.$router.replace({ name: 'home' })
               } else {

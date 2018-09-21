@@ -170,6 +170,7 @@
           method: 'get',
           params: this.$http.adornParams({
             'type': this.typeName,
+            'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {

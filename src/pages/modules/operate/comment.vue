@@ -1,10 +1,16 @@
 <template>
   <div class="mod-role">
-    <div class="main-title-top">
-      <label><span>用户ID</span><input type="text"></label>
-      <label><span>用户昵称</span><input type="text"></label>
-      <div class="btnCheck">查 询</div>
-    </div>
+    <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item label="用户ID">
+        <el-input v-model="dataForm.userid" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="用户昵称">
+        <el-input v-model="dataForm.nickname" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
       <el-tab-pane label="评论审核" name="first">
         <el-table
@@ -13,49 +19,52 @@
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
-            prop="name"
+            label="用户头像"
             header-align="center"
             align="center"
-            width="100"
-            label="用户头像">
+            width="80">
+              <template slot-scope="scope">
+                <img :src="scope.row.headUrl" width="40" height="40" class="head_pic"/>
+              </template>
           </el-table-column>
           <el-table-column
-            prop="name"
-            header-align="center"
-            align="center"
-            width="60"
-            label="用户">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            header-align="center"
-            align="center"
-            width="150"
-            label="标题">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            header-align="center"
-            align="center"
-            width="200"
-            label="评论内容">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            header-align="center"
-            align="center"
-            width="200"
-            label="内容标题">
-          </el-table-column>
-          <el-table-column
-            prop="name"
+            prop="id"
             header-align="center"
             align="center"
             width="50"
+            label="用户ID">
+          </el-table-column>
+          <el-table-column
+            prop="nickname"
+            header-align="center"
+            align="center"
+            width="100"
+            label="用户昵称">
+          </el-table-column>
+          <el-table-column
+            prop="content"
+            header-align="center"
+            align="center"
+            width="235"
+            label="评论内容">
+          </el-table-column>
+          <el-table-column
+            prop="title"
+            header-align="center"
+            align="center"
+            width="250"
+            label="内容标题">
+          </el-table-column>
+          <el-table-column
+            prop="type"
+            header-align="center"
+            align="center"
+            width="50"
+            :formatter="formatSex"
             label="内容类型">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="creatdate"
             header-align="center"
             align="center"
             width="160"
@@ -68,8 +77,8 @@
             width="100"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">通过</el-button>
-              <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)">不通过</el-button>
+              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">通过</el-button>
+              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">不通过</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -109,11 +118,37 @@
     },
     methods: {
       formatSex: function (row, column, cellValue) {
-        if (cellValue == "1"){
-          return '下线';
-        }else if (cellValue == "0"){
-          return '正常';
+        if (cellValue == "3"){
+          return '视频';
+        }else {
+          return '图文';
         }
+      },
+      UpdateHandle(id,status){
+        this.$http({
+          url: this.$http.adornUrl('/mcn/updateComment'),
+          method: 'post',
+          data: this.$http.adornData({
+            'id': id,
+            'status': status ,//2是不通过  3是通过
+            'token': this.$cookie.get('token')
+          })
+        }).then(({data}) => {
+          console.log(data)
+          if (data.resultCode == 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.visible = false
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(data.data.msg)
+          }
+        })
       },
       handleClick(tab, event) {
         if(tab.name == 'first'){
@@ -126,19 +161,30 @@
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        this.$http({
-          url: this.$http.adornUrl('/mcn/getType'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'type': this.typeName,
-          })
-        }).then(({data}) => {
-          if (data.resultCode == 0) {
-            this.dataList = data.data
-          } else {
-            this.dataList = []
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            console.log(this.dataForm.userid,this.dataForm.nickname)
+            this.$http({
+              url: this.$http.adornUrl('/mcn/getselectlistcomment'),
+              method: 'get',
+              params: this.$http.adornParams({
+                'nickname': this.dataForm.nickname,
+                'userid': this.dataForm.userid,
+                'page': this.pageIndex - 1,
+                'token': this.$cookie.get('token')
+              })
+            }).then(({data}) => {
+              console.log(data)
+              if (data.resultCode == 0) {
+                this.dataList = data.data.list
+                this.totalPage = data.data.total
+              } else {
+                this.dataList = []
+                this.totalPage = 0
+              }
+              this.dataListLoading = false
+            })
           }
-          this.dataListLoading = false
         })
       },
       // 每页数
@@ -161,36 +207,6 @@
   .mod-role{
     .tabs-icon{
       position: static;
-    }
-  }
-  .btns{
-    margin-left:0;
-  }
-  .main-title-top{
-    width: 100%;
-    height: 50px;
-    label {
-      width: 210px;
-      margin-bottom: 10px;
-      float: left;
-      span {
-        margin-right: 10px;
-      }
-      input {
-      display: inline-block;
-      width: 80px;
-      height: 20px;
-      border: 1px solid #dcdcdc;
-      }
-    }
-    .btnCheck{
-      float: left;
-      background: #409EFF;
-      color: #fff;
-      padding: 6px 15px;
-      border-radius: 100px;
-      cursor: pointer;
-      margin-top: -5px;
     }
   }
 </style>

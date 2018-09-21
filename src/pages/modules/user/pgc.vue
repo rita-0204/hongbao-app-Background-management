@@ -2,14 +2,20 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button v-if="isAuth('')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="primary" @click="addHander()">新增</el-button>
       </el-form-item>
     </el-form>
-    <div class="main-title-top">
-      <label><span>用户ID</span><input type="text"></label>
-      <label><span>用户昵称</span><input type="text"></label>
-      <div class="btnCheck">查 询</div>
-    </div>
+    <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item label="用户ID">
+        <el-input v-model="dataForm.id" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="用户昵称">
+        <el-input v-model="dataForm.nickname" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
       <el-tab-pane label="PGC用户" name="first">
         <el-table
@@ -18,35 +24,37 @@
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
-            prop="name"
+            label="用户头像"
             header-align="center"
             align="center"
-            width="100"
-            label="用户头像">
+            width="80">
+            <template slot-scope="scope">
+              <img :src="scope.row.headUrl" width="40" height="40" class="head_pic"/>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="id"
             header-align="center"
             align="center"
             width="100"
             label="用户ID">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="nickname"
             header-align="center"
             align="center"
             width="150"
             label="用户昵称">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="sex"
             header-align="center"
             align="center"
             width="60"
             label="性别">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="type"
             header-align="center"
             align="center"
             width="60"
@@ -60,14 +68,14 @@
             label="一级分类">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="rank"
             header-align="center"
             align="center"
             width="160"
             label="分级">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="url"
             header-align="center"
             align="center"
             width="200"
@@ -80,7 +88,7 @@
             width="100"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="edit(scope.row.id)">编辑</el-button>
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)">删除</el-button>
             </template>
           </el-table-column>
@@ -96,12 +104,15 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-update v-if="addVisible" ref="add" @refreshDataList="getDataList"></add-update>
+    <edit-update v-if="editVisible" ref="edit" @refreshDataList="getDataList"></edit-update>
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './pgc-add'
+  import AddUpdate from './pgc-add'
+  import editUpdate from './pgc-edit'
+
   export default {
     data () {
       return {
@@ -113,14 +124,19 @@
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
-        addOrUpdateVisible: false,
+        editVisible:false,
+        addVisible: false,
         dataListSelections: [],
         activeName2: 'first',
         typeName: 0
       }
     },
     components: {
-      AddOrUpdate
+      AddUpdate,
+      editUpdate
+    },
+    created(){
+//      console.log(333,this.cookie.get('token'))
     },
     activated () {
       this.getDataList()
@@ -141,29 +157,46 @@
         }
         this.getDataList ()
       },
-      // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
+      // 新增
+      addHander () {
+        this.addVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.add.init()
+        })
+      },
+      // 编辑
+      edit (id) {
+        this.editVisible = true
+        this.$nextTick(() => {
+          this.$refs.edit.init(id)
         })
       },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        this.$http({
-          url: this.$http.adornUrl('/mcn/getType'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'type': this.typeName,
-          })
-        }).then(({data}) => {
-          if (data.resultCode == 0) {
-            this.dataList = data.data
-          } else {
-            this.dataList = []
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            this.$http({
+              url: this.$http.adornUrl('/mcn/getpgclist'),
+              method: 'get',
+              params: this.$http.adornParams({
+                'nickname': this.dataForm.nickname,
+                'id': this.dataForm.id,
+                'page': this.pageIndex - 1,
+                'token': this.$cookie.get('token')
+              })
+            }).then(({data}) => {
+              console.log(data)
+              if (data.resultCode == 0) {
+                this.dataList = data.data.list
+                this.totalPage = data.data.total
+              } else {
+                this.dataList = []
+                this.totalPage = 0
+              }
+              this.dataListLoading = false
+            })
           }
-          this.dataListLoading = false
         })
       },
       // 每页数
@@ -184,38 +217,11 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" type="stylesheet/scss" scoped>
   .mod-role{
-  .tabs-icon{
-    position: static;
-  }
+    .tabs-icon{
+      position: static;
+    }
   }
   .btns{
     margin-left:0;
-  }
-  .main-title-top{
-    width: 100%;
-    height: 50px;
-  label {
-    width: 210px;
-    margin-bottom: 10px;
-    float: left;
-  span {
-    margin-right: 10px;
-  }
-  input {
-    display: inline-block;
-    width: 80px;
-    height: 20px;
-    border: 1px solid #dcdcdc;
-  }
-  }
-  .btnCheck{
-    float: left;
-    background: #409EFF;
-    color: #fff;
-    padding: 6px 15px;
-    border-radius: 100px;
-    cursor: pointer;
-    margin-top: -5px;
-  }
   }
 </style>

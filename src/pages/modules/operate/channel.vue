@@ -2,17 +2,23 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button v-if="isAuth('')" type="primary" @click="addOrUpdateHandle(typeName)">新增</el-button>
+        <el-button type="primary" @click="addHandle(typeName)">新增</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
-      <!--<el-tabs class="aaa">-->
         <el-tab-pane label="图文频道" name="first">
           <el-table
             :data="dataList"
             border
             v-loading="dataListLoading"
             style="width: 100%;">
+            <el-table-column
+              prop="sort"
+              header-align="center"
+              align="center"
+              width="200"
+              label="序号">
+            </el-table-column>
             <el-table-column
               prop="name"
               header-align="center"
@@ -24,7 +30,7 @@
               prop="status"
               header-align="center"
               align="center"
-              width="350"
+              width="150"
               label="状态"
               :formatter="formatSex">
             </el-table-column>
@@ -35,7 +41,7 @@
               width="250"
               label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id)">修改</el-button>
                 <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                 v-if="scope.row.status == 1 ">
                   上线
@@ -55,6 +61,13 @@
             v-loading="dataListLoading"
             style="width: 100%;">
             <el-table-column
+              prop="sort"
+              header-align="center"
+              align="center"
+              width="200"
+              label="序号">
+            </el-table-column>
+            <el-table-column
               prop="name"
               header-align="center"
               align="center"
@@ -65,7 +78,7 @@
               prop="status"
               header-align="center"
               align="center"
-              width="350"
+              width="150"
               label="状态"
               :formatter="formatSex">
             </el-table-column>
@@ -89,15 +102,16 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
-      <!--</el-tabs>-->
     </el-tabs>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <update v-if="UpdateVisible" ref="Update" @refreshDataList="getDataList"></update>
+    <add v-if="addVisible" ref="add" @refreshDataList="getDataList"></add>
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './channel-change-or-update'
+  import Update from './channel-update'
+  import Add from './channel-add'
   export default {
     data () {
       return {
@@ -107,13 +121,15 @@
         dataList: [],
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false,
+        UpdateVisible: false,
+        addVisible: false,
         activeName2: 'first',
         typeName: 0
       }
     },
     components: {
-      AddOrUpdate
+      Update,
+      Add
     },
     activated () {
       this.getDataList()
@@ -142,6 +158,7 @@
           method: 'get',
           params: this.$http.adornParams({
             'type': this.typeName,
+            'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
@@ -154,10 +171,16 @@
         })
       },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
+      UpdateHandle (id) {
+        this.UpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.Update.init(id)
+        })
+      },
+      addHandle (id) {
+        this.addVisible = true
+        this.$nextTick(() => {
+          this.$refs.add.init(id)
         })
       },
       //上线
@@ -180,7 +203,8 @@
             method: 'post',
             data: this.$http.adornData({
               'id': id,
-              'status': status
+              'status': status,
+              'token': this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {

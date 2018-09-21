@@ -201,6 +201,7 @@
           method: 'get',
           params: this.$http.adornParams({
             'type': this.typeName,
+            'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
@@ -249,7 +250,8 @@
             method: 'post',
             data: this.$http.adornData({
               'id': id,
-              'status': status
+              'status': status,
+              'token': this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {

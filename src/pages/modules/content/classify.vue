@@ -84,7 +84,8 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'roleName': this.dataForm.roleName
+            'roleName': this.dataForm.roleName,
+            'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

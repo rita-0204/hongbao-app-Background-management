@@ -65,6 +65,8 @@ router.beforeEach((to, from, next) => {
         'token': Vue.cookie.get('token')
       })
     }).then(({data}) => {
+      console.log(data)
+
       if (data.resultCode == 0) {
         fnAddDynamicMenuRoutes(data.data)
         router.options.isAddDynamicMenuRoutes = true

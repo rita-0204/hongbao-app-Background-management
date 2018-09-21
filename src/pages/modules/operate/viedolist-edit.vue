@@ -166,7 +166,8 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id,
-                'name': this.dataForm.roleName
+                'name': this.dataForm.roleName,
+                'token': this.$cookie.get('token')
               })
             }).then(({data}) => {
               console.log(data,2626)

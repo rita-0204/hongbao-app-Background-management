@@ -54,18 +54,18 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="签名" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
-      </el-form-item>
-      <el-form-item label="爬虫地址" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
-      </el-form-item>
-      <el-form-item label="联系人" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
-      </el-form-item>
+    <el-form-item label="签名" prop="remark">
+      <el-input v-model="dataForm.remark"></el-input>
+    </el-form-item>
+    <el-form-item label="爬虫地址" prop="remark">
+      <el-input v-model="dataForm.remark"></el-input>
+    </el-form-item>
+    <el-form-item label="联系人" prop="remark">
+      <el-input v-model="dataForm.remark"></el-input>
+    </el-form-item>
+    <el-form-item label="邮箱" prop="remark">
+      <el-input v-model="dataForm.remark"></el-input>
+    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">返回</el-button>
@@ -78,7 +78,6 @@
   export default {
     data () {
       return {
-        formData:{},
         imageUrl: '',
         value:'',
         options:[{
@@ -121,31 +120,7 @@
         this.visible = true
       },
       handleAvatarSuccess(res, file) {
-        console.log(file)
-        const formData = new FormData()
-
-        formData.pic= file
         this.imageUrl = URL.createObjectURL(file.raw);
-
-        console.log(formData,666)
-        this.$http({
-          url: this.$http.adornUrl('/controll/uploadpic'),
-          method: 'post',
-          data: this.$http.adornData({
-            'token': this.$cookie.get('token'),
-            'pic':formData
-          })
-        }).then(({data}) => {
-          console.log(data)
-          if (data.resultCode == 0) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.total
-          } else {
-            this.dataList = []
-            this.totalPage = 0
-          }
-          this.dataListLoading = false
-        })
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
