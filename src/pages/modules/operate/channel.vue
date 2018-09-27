@@ -16,6 +16,7 @@
               prop="sort"
               header-align="center"
               align="center"
+              label-class-name="colorLabel"
               width="200"
               label="序号">
             </el-table-column>
@@ -23,6 +24,7 @@
               prop="name"
               header-align="center"
               align="center"
+              label-class-name="colorLabel"
               label="频道名称">
             </el-table-column>
             <el-table-column
@@ -30,14 +32,17 @@
               prop="status"
               header-align="center"
               align="center"
+              label-class-name="colorLabel"
               width="150"
               label="状态"
+              class-name="colorRow"
               :formatter="formatSex">
             </el-table-column>
             <el-table-column
               fixed="right"
               header-align="center"
               align="center"
+              label-class-name="colorLabel"
               width="250"
               label="操作">
               <template slot-scope="scope">
@@ -65,12 +70,14 @@
               header-align="center"
               align="center"
               width="200"
+              label-class-name="colorLabel"
               label="序号">
             </el-table-column>
             <el-table-column
               prop="name"
               header-align="center"
               align="center"
+              label-class-name="colorLabel"
               label="频道名称">
             </el-table-column>
             <el-table-column
@@ -79,6 +86,8 @@
               header-align="center"
               align="center"
               width="150"
+              class-name="colorRow"
+              label-class-name="colorLabel"
               label="状态"
               :formatter="formatSex">
             </el-table-column>
@@ -87,6 +96,7 @@
               header-align="center"
               align="center"
               width="250"
+              label-class-name="colorLabel"
               label="操作">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -162,7 +172,7 @@
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
-            console.log(data)
+//            console.log(data)
             this.dataList = data.data
           } else {
             this.dataList = []

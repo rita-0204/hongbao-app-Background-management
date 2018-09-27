@@ -1,16 +1,17 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '添加用户'"
+    :title="!dataForm.id ? '添加用户' : '编辑'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="作者头像" prop="roleName">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
+             label-width="80px">
+      <el-form-item label="作者头像" prop="headImg" :class="{ 'is-required': !dataForm.id }">
         <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
+          :action="url"
+          :before-upload="beforeUploadHandle"
+          :on-success="successHandle">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -18,53 +19,53 @@
       <el-form-item label="作者名称" prop="roleName">
         <el-input v-model="dataForm.roleName"></el-input>
       </el-form-item>
-      <el-form-item label="手机" prop="roleName">
-        <el-input v-model="dataForm.remark"></el-input>
+      <el-form-item label="手机" prop="mobile">
+        <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
       </el-form-item>
-      <el-form-item label="性别" prop="roleName">
+      <el-form-item label="性别" prop="sex" :class="{ 'is-required': !dataForm.id }">
         <div style="line-height: 38px;">
-          <el-radio-group v-model="radio2">
-            <el-radio :label="3">男</el-radio>
-            <el-radio :label="6">女</el-radio>
-            <el-radio :label="9">未知</el-radio>
+          <el-radio-group v-model="dataForm.sex">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="2">女</el-radio>
+            <el-radio :label="0">未知</el-radio>
           </el-radio-group>
         </div>
       </el-form-item>
-      <el-form-item label="马甲号" prop="roleName">
+      <el-form-item label="马甲号" prop="majiaNo" :class="{ 'is-required': !dataForm.id }">
         <div style="line-height: 38px;">
-          <el-radio v-model="radio" label="1">是</el-radio>
-          <el-radio v-model="radio" label="2">否</el-radio>
+          <el-radio v-model="dataForm.majiaNo" :label="1">是</el-radio>
+          <el-radio v-model="dataForm.majiaNo" :label="0">否</el-radio>
         </div>
       </el-form-item>
-      <el-form-item label="分类" prop="roleName">
-        <el-select v-model="value" placeholder="选择分类">
-          <el-option v-for="item in options1"
+      <el-form-item label="分类" prop="classify" :class="{ 'is-required': !dataForm.id }">
+        <el-select v-model="dataForm.classify" placeholder="选择分类">
+          <el-option v-for="item in classifyOptions"
                      :key="item.value"
                      :label="item.label"
                      :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="分级" prop="roleName">
-        <el-select v-model="value">
-          <el-option v-for="item in options2"
+      <el-form-item label="分级" prop="grade" :class="{ 'is-required': !dataForm.id }">
+        <el-select v-model="dataForm.grade">
+          <el-option v-for="item in rankOptions"
                      :key="item.value"
                      :label="item.label"
                      :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="签名" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
+      <el-form-item label="签名" prop="sign">
+        <el-input v-model="dataForm.sign"></el-input>
       </el-form-item>
-      <el-form-item label="爬虫地址" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
+      <el-form-item label="爬虫地址" prop="pachongAd">
+        <el-input v-model="dataForm.pachongAd"></el-input>
       </el-form-item>
-      <el-form-item label="联系人" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
+      <el-form-item label="联系人" prop="contant">
+        <el-input v-model="dataForm.contant"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="dataForm.email"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -75,103 +76,197 @@
 </template>
 
 <script>
+  import {isEmail, isMobile} from '@/utils/validate'
+
   export default {
-    data () {
+    data() {
+      var validateEmail = (rule, value, callback) => {
+        if (!isEmail(value)) {
+          callback(new Error('邮箱格式错误'))
+        } else {
+          callback()
+        }
+      }
+      var validateMobile = (rule, value, callback) => {
+        if (!isMobile(value)) {
+          callback(new Error('手机号格式错误'))
+        } else {
+          callback()
+        }
+      }
       return {
-        formData:{},
         imageUrl: '',
-        value:'',
-        options:[{
-          value: '选项1',
+        url: '',
+        value: '',
+        classifyOptions: [{
+          value: '1',
           label: '一级分类'
         }],
-        options1:[{
-          value: '选项1',
-          label: '二级分类'
-        }],
-        options2:[{
-          value: '选项1',
-          label: '选择分类'
-        }],
-        radio: '1',
-        radio2: 9,
+        rankOptions: [{
+          value: '1',
+          label: '一级'
+        },
+          {
+            value: '2',
+            label: '二级'
+          },
+          {
+            value: '3',
+            label: '三级'
+          },
+          {
+            value: '4',
+            label: '四级'
+          },
+          {
+            value: '5',
+            label: '五级'
+          }],
         checkList: [],
         visible: false,
-        menuList: [],
-        menuListTreeProps: {
-          label: 'name',
-          children: 'children'
-        },
+        imgUrl: '',
         dataForm: {
           id: 0,
           roleName: '',
-          remark: ''
+          remark: '',
+          mobile: '',
+          majiaNo: 1,
+          sex: 0,
+          classify: '',
+          grade: '',
+          sign: '',
+          pachongAd: '',
+          contant: '',
+          email: ''
         },
         dataRule: {
           roleName: [
-            { required: true, message: '角色名称不能为空', trigger: 'blur' }
+            {required: true, message: '作者名称不能为空', trigger: 'blur'}
+          ],
+          mobile: [
+            {required: true, message: '手机号不能为空', trigger: 'blur'},
+            {validator: validateMobile, trigger: 'blur'}
+          ],
+          sex: [
+            {required: true, message: '请选择性别', trigger: 'blur'}
+          ],
+          majiaNo: [
+            {required: true, message: '请选择马甲号', trigger: 'blur'}
+          ],
+          classify: [
+            {required: true, message: '请选择分类', trigger: 'blur'}
+          ],
+          grade: [
+            {required: true, message: '请选择分级', trigger: 'blur'}
+          ],
+          email: [
+            {required: true, message: '邮箱不能为空', trigger: 'blur'},
+            {validator: validateEmail, trigger: 'blur'}
           ]
-        },
-        tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
+        }
       }
     },
     methods: {
-      init (id) {
+      init(id) {
+        this.url = this.$http.adornUrl(`/controll/uploadpic?token=${this.$cookie.get('token')}`)
+        this.urlShow = this.$http.adornUrl(`/controll/picshow?token=${this.$cookie.get('token')}`)
         this.dataForm.id = id || 0
         this.visible = true
-      },
-      handleAvatarSuccess(res, file) {
-        console.log(file)
-        const formData = new FormData()
-
-        formData.pic= file
-        this.imageUrl = URL.createObjectURL(file.raw);
-
-        console.log(formData,666)
-        this.$http({
-          url: this.$http.adornUrl('/controll/uploadpic'),
-          method: 'post',
-          data: this.$http.adornData({
-            'token': this.$cookie.get('token'),
-            'pic':formData
+        if (this.dataForm.id) {
+          this.$http({
+            url: this.$http.adornUrl('/mcn/getType'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'type': this.typeName,
+              'token': this.$cookie.get('token')
+            })
+          }).then(({data}) => {
+            if (data.resultCode == 0) {
+            console.log(data)
+//              this.dataList = data.data
+            } else {
+              this.dataList = []
+            }
+          }).then(() => {
+            this.$http({
+              url: this.$http.adornUrl('/mcn/infopgc'),
+              method: 'get',
+              params: this.$http.adornParams({
+                'id': this.dataForm.id,
+                'token': this.$cookie.get('token')
+              })
+            }).then(({data}) => {
+              if (data.resultCode == 0) {
+                this.imageUrl = data.data.headurl
+                this.dataForm.roleName = data.data.nickname
+                this.dataForm.mobile = data.data.mobile
+                this.dataForm.sex = data.data.sex
+                this.dataForm.majiaNo = data.data.type
+                this.dataForm.sign = data.data.sign
+                this.dataForm.pachongAd = data.data.url
+                this.dataForm.contant = data.data.name
+                this.dataForm.email = data.data.mail
+                if (data.data.classify == 1) {
+                  this.dataForm.classify = '一级分类'
+                } else if (data.data.classify == 2) {
+                  this.dataForm.classify = '二级分类'
+                }
+                if (data.data.rank == 1) {
+                  this.dataForm.grade = '一级'
+                } else if (data.data.rank == 2) {
+                  this.dataForm.grade = '二级'
+                } else if (data.data.rank == 3) {
+                  this.dataForm.grade = '三级'
+                } else if (data.data.rank == 4) {
+                  this.dataForm.grade = '四级'
+                } else if (data.data.rank == 5) {
+                  this.dataForm.grade = '五级'
+                }
+              }
+            })
           })
-        }).then(({data}) => {
-          console.log(data)
-          if (data.resultCode == 0) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.total
-          } else {
-            this.dataList = []
-            this.totalPage = 0
-          }
-          this.dataListLoading = false
-        })
+        }
       },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+      // 上传之前
+      beforeUploadHandle(file) {
+        if (file.type !== 'image/jpg' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+          this.$message.error('只支持jpg、png、gif格式的图片！')
+          return false
         }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+      },
+      // 上传成功
+      successHandle(response, file) {
+        if (response.resultCode == 0) {
+          this.imageUrl = this.urlShow + '&url=' + response.data
+//          this.imageUrl = URL.createObjectURL(file.raw)
+//          this.imgUrl = response.data
+        } else {
+          this.$message.error(response.msg)
         }
-        return isJPG && isLt2M;
       },
       // 表单提交
-      dataFormSubmit () {
+      dataFormSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/mcn/updeateType'),
+              url: this.$http.adornUrl('/mcn/pgcadd'),
               method: 'post',
               data: this.$http.adornData({
-                'id': this.dataForm.id,
-                'name': this.dataForm.roleName
+                'headurl': this.imageUrl,
+                'nickname': this.dataForm.roleName,
+                'mobile': this.dataForm.mobile,
+                'sex': this.dataForm.sex,
+                'type': this.dataForm.majiaNo,
+                'classify': this.dataForm.classify,
+                'rank': this.dataForm.grade,
+                'sign': this.dataForm.sign,
+                'url': this.dataForm.pachongAd,
+                'name': this.dataForm.contant,
+                'mail': this.dataForm.email,
+                'token': this.$cookie.get('token')
               })
             }).then(({data}) => {
-              console.log(data,2626)
+//              console.log(data,2626)
               if (data.resultCode == 0) {
                 this.$message({
                   message: '操作成功',
@@ -200,9 +295,11 @@
     position: relative;
     overflow: hidden;
   }
+
   .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
   }
+
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
@@ -211,9 +308,10 @@
     line-height: 90px;
     text-align: center;
   }
+
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 90px;
+    height: 90px;
     display: block;
   }
 </style>

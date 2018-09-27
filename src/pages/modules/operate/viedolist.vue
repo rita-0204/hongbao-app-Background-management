@@ -49,82 +49,105 @@
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
-            prop="name"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="100"
             label="视频">
+            <template slot-scope="scope">
+              <img :src="scope.row.cover" width="80" height="80" class="head_pic"/>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="id"
             header-align="center"
             align="center"
-            width="60"
+            label-class-name="colorLabel"
+            width="70"
             label="视频ID">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="title"
             header-align="center"
             align="center"
-            width="150"
+            label-class-name="colorLabel"
+            width="130"
             label="标题">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="typename"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="60"
             label="频道">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="classify1name"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="60"
             label="分类">
+            <template slot-scope="scope">
+              <p>{{scope.row.classify1name}} / {{scope.row.classify2name}}</p>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="pgcid"
             header-align="center"
             align="center"
-            width="100"
+            label-class-name="colorLabel"
+            width="80"
             label="用户ID">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="nickname"
             header-align="center"
             align="center"
-            width="160"
+            label-class-name="colorLabel"
+            width="90"
             label="用户昵称">
           </el-table-column>
           <el-table-column
-            prop="name"
             header-align="center"
             align="center"
-            width="145"
+            :formatter="formatData"
+            label-class-name="colorLabel"
+            width="160"
             label="发布时间">
           </el-table-column>
           <el-table-column
-            class="time"
+            class="status"
             prop="status"
             header-align="center"
             align="center"
+            class-name="colorRow"
             width="60"
             label="状态"
+            label-class-name="colorLabel"
             :formatter="formatSex">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
-            align="center"
-            width="80"
+            align="left"
+            width="145"
+            label-class-name="colorLabel"
             label="数据">
+            <template slot-scope="scope">
+              <p>评论：{{scope.row.ping}}</p>
+              <p>点赞：{{scope.row.likenum}}</p>
+              <p>分享：{{scope.row.ping}}</p>
+              <p>播放次数：{{scope.row.playernum}}</p>
+            </template>
           </el-table-column>
           <el-table-column
             fixed="right"
             header-align="center"
             align="center"
-            width="50"
+            width="85"
+            label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
@@ -153,6 +176,7 @@
 
 <script>
   import AddOrUpdate from './viedolist-edit'
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -178,6 +202,9 @@
       this.getDataList()
     },
     methods: {
+      formatData(data){
+        return moment(data.createtime).format('YYYY-MM-DD HH:mm:ss')
+      },
       formatSex: function (row, column, cellValue) {
         if (cellValue == "1"){
           return '下线';
@@ -197,17 +224,21 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/mcn/getType'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'type': this.typeName,
+          url: this.$http.adornUrl('/mcn/selnewslist'),
+          method: 'post',
+          data: this.$http.adornData({
+            'id': 263,
+            'layoutType': 4,// 4是视频  否则为图文
             'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
+          console.log(data)
           if (data.resultCode == 0) {
-            this.dataList = data.data
+            this.dataList = data.data.list
+            this.totalPage = data.data.total
           } else {
             this.dataList = []
+            this.totalPage = 0
           }
           this.dataListLoading = false
         })
@@ -246,7 +277,7 @@
             status = 0
           }
           this.$http({
-            url: this.$http.adornUrl('/mcn/updeateType'),
+            url: this.$http.adornUrl('/mcn/upmcnnews'),
             method: 'post',
             data: this.$http.adornData({
               'id': id,

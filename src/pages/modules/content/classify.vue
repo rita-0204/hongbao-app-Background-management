@@ -1,141 +1,143 @@
 <template>
-  <div class="mod-role">
+  <div class="mod-menu">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button v-if="isAuth('')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="primary" @click="addHandle(typeName)">新增</el-button>
       </el-form-item>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
-      <el-table-column
-        prop="roleName"
-        header-align="center"
-        align="center"
-        label="分类名称">
-      </el-table-column>
-      <el-table-column
-        class="time"
-        prop="createTime"
-        header-align="center"
-        align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.roleId)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
+    <el-tabs v-model="activeName2" type="card" class="tabs-icon">
+      <el-tab-pane label="分类管理" name="first">
+        <el-table
+          :data="dataList"
+          border
+          style="width: 100%;">
+          <table-tree-column
+            prop="name"lef
+            header-align="center"
+            treeKey="id"
+            width="500"
+            class-name="pad-left"
+            label-class-name="colorLabel"
+            label="分类名称">
+          </table-tree-column>
+          <el-table-column
+            prop="createtime"
+            header-align="center"
+            align="center"
+            width="260"
+            :formatter="formatData"
+            label-class-name="colorLabel"
+            :show-overflow-tooltip="true"
+            label="创建时间">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            header-align="center"
+            align="left"
+            width="220"
+            label-class-name="colorLabel"
+            label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id)">修改</el-button>
+              <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+              <el-button v-if="scope.row.pid == 0" type="text" size="small" @click="addHandle(scope.row.id)">添加子分类</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <update v-if="UpdateVisible" ref="Update" @refreshDataList="getDataList"></update>
+    <add v-if="addVisible" ref="add" @refreshDataList="getDataList"></add>
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './classify-add-or-update'
+  import Update from './classify-update'
+  import Add from './classify-add'
+  import TableTreeColumn from '@/components/table-tree-column'
+  import { treeDataTranslate } from '@/utils'
+  import moment from 'moment'
   export default {
     data () {
       return {
-        dataForm: {
-          roleName: ''
-        },
+        dataForm: {},
         dataList: [],
-        pageIndex: 1,
-        pageSize: 10,
-        totalPage: 0,
+        activeName2: 'first',
         dataListLoading: false,
-        dataListSelections: [],
-        addOrUpdateVisible: false
+        addOrUpdateVisible: false,
+        UpdateVisible: false,
+        addVisible: false,
+        typeName: 0
       }
     },
     components: {
-      AddOrUpdate
+      Update,
+      Add,
+      TableTreeColumn
+    },
+    computed:{
+      classifyList:{
+        get(){
+          return this.$store.state.list.classifyList //接收store储存数据
+        },
+        set(val){
+          this.$store.commit('list/updateList',val) //向store/同步提交
+        }
+      }
     },
     activated () {
       this.getDataList()
     },
     methods: {
+      formatData(data){
+        return moment(data.createtime).format('YYYY-MM-DD HH:mm:ss')
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/role/list'),
+          url: this.$http.adornUrl('/mcn/getClassify'),
           method: 'get',
           params: this.$http.adornParams({
-            'page': this.pageIndex,
-            'limit': this.pageSize,
-            'roleName': this.dataForm.roleName,
             'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
-          } else {
-            this.dataList = []
-            this.totalPage = 0
-          }
+          this.dataList = treeDataTranslate(data.data, 'id')
+          this.classifyList = data.data
           this.dataListLoading = false
         })
       },
-      // 每页数
-      sizeChangeHandle (val) {
-        this.pageSize = val
-        this.pageIndex = 1
-        this.getDataList()
-      },
-      // 当前页
-      currentChangeHandle (val) {
-        this.pageIndex = val
-        this.getDataList()
-      },
-      // 多选
-      selectionChangeHandle (val) {
-        this.dataListSelections = val
-      },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
+      UpdateHandle (id) {
+        this.UpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.Update.init(id)
+        })
+      },
+      addHandle (id) {
+        this.addVisible = true
+        this.$nextTick(() => {
+          this.$refs.add.init(id)
         })
       },
       // 删除
       deleteHandle (id) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.roleId
-        })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        this.$confirm(`确定对[id=${id}]进行[删除]操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/sys/role/delete'),
+            url: this.$http.adornUrl(`/mcn/updateClassify`),
             method: 'post',
-            data: this.$http.adornData(ids, false)
+            data: this.$http.adornData({
+              'id': id,
+              'status': 1,
+              'token': this.$cookie.get('token')
+            })
           }).then(({data}) => {
-            if (data && data.code === 0) {
+            if (data.resultCode == 0) {
               this.$message({
                 message: '操作成功',
                 type: 'success',
@@ -156,7 +158,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" type="stylesheet/scss" scoped>
-  .time{
-
+  .mod-menu{
+    padding: 20px;
+    .tabs-icon{
+      position: static;
+    }
   }
 </style>

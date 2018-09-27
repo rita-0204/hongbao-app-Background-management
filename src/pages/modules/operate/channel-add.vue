@@ -4,11 +4,11 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="dataForm.roleName" placeholder="角色名称"></el-input>
+      <el-form-item label="频道名称" prop="roleName">
+        <el-input v-model="dataForm.roleName" placeholder="频道名称"></el-input>
       </el-form-item>
-      <el-form-item label="序号" prop="roleName">
-        <el-input v-model="dataForm.roleName" placeholder="序号"></el-input>
+      <el-form-item label="序号" prop="roleNum" :class="{ 'is-required': !dataForm.id }">
+        <el-input v-model="dataForm.roleNum" placeholder="序号"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -35,14 +35,17 @@
         dataForm: {
           id: 0,
           roleName: '',
-          remark: ''
+          remark: '',
+          roleNum: ''
         },
         dataRule: {
           roleName: [
-            { required: true, message: '角色名称不能为空', trigger: 'blur' }
+            { required: true, message: '频道名称不能为空', trigger: 'blur' }
+          ],
+          roleNum: [
+            { required: true, message: '序号不能为空', trigger: 'blur' }
           ]
-        },
-        tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
+        }
       }
     },
     methods: {
@@ -58,6 +61,7 @@
               url: this.$http.adornUrl('/mcn/updeateType'),
               method: 'post',
               data: this.$http.adornData({
+                'sort': this.dataForm.roleNum,
                 'id': this.dataForm.id,
                 'name': this.dataForm.roleName,
                 'token': this.$cookie.get('token')

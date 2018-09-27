@@ -59,11 +59,13 @@
               type: 'warning'
             }).then(() => {
               this.$http({
-                url: this.$http.adornUrl('/sys/logout'),
-                method: 'post',
-                data: this.$http.adornData()
+                url: this.$http.adornUrl('/controll/quit'),
+                method: 'get',
+                params: this.$http.adornParams({
+                  'token': this.$cookie.get('token')
+                })
               }).then(({data}) => {
-                if (data && data.code === 0) {
+                if (data.resultCode == 0) {
                   clearLoginInfo()  //清除登录信息及token
                   this.$router.push({ name: 'login' })  //重新跳转到登录页
                 }
@@ -82,7 +84,7 @@
     left:0;
     right:0;
     height:50px;
-    background:#45c2b5;
+    background:#409EFF;
     z-index:900;
     box-shadow: 0 2px 4px rgba(0,0,0,.08);
     .site-navbar-header{

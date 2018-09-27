@@ -3,26 +3,27 @@
     :title="!dataForm.id ? '新增' : '视频编辑'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
+             label-width="80px">
       <el-form-item label="视频ID" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
+        <el-input v-model="dataForm.id" :disabled="true"></el-input>
       </el-form-item>
-      <el-form-item label="标题" prop="roleName">
-        <el-input v-model="dataForm.roleName"></el-input>
+      <el-form-item label="标题" prop="title" :class="{ 'is-required': !dataForm.id }">
+        <el-input v-model="dataForm.title"></el-input>
       </el-form-item>
       <el-form-item label="标签" prop="remark">
-        <el-input v-model="dataForm.remark"></el-input>
+        <el-input v-model="dataForm.tag"></el-input>
       </el-form-item>
       <el-form-item label="分类" prop="remark">
-        <el-select v-model="value" placeholder="一级分类" style="margin-right:10px;">
-          <el-option v-for="item in options"
+        <el-select v-model="oneClassify" placeholder="一级分类" style="margin-right:10px;">
+          <el-option v-for="item in oneOptions"
                      :key="item.value"
                      :label="item.label"
                      :value="item.value">
           </el-option>
         </el-select>
-        <el-select v-model="value" placeholder="二级分类">
-          <el-option v-for="item in options1"
+        <el-select v-model="twoClassify" placeholder="二级分类">
+          <el-option v-for="item in twoOptions"
                      :key="item.value"
                      :label="item.label"
                      :value="item.value">
@@ -30,45 +31,25 @@
         </el-select>
       </el-form-item>
       <el-form-item label="分级" prop="remark">
-        <el-select v-model="value">
-          <el-option v-for="item in options2"
+        <el-select v-model="rank">
+          <el-option v-for="item in rankOptions"
                      :key="item.value"
                      :label="item.label"
                      :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="频道" prop="roleName">
+      <el-form-item label="频道" prop="channel" :class="{ 'is-required': !dataForm.id }">
         <template>
-          <el-checkbox-group v-model="checkList" style="width:100%;">
-            <el-checkbox label="推荐"></el-checkbox>
-            <el-checkbox label="搞笑"></el-checkbox>
-            <el-checkbox label="娱乐"></el-checkbox>
-            <el-checkbox label="社会"></el-checkbox>
-            <el-checkbox label="生活"></el-checkbox>
-            <el-checkbox label="音乐"></el-checkbox>
-            <el-checkbox label="美食"></el-checkbox>
-            <el-checkbox label="纪录"></el-checkbox>
-            <el-checkbox label="旅行"></el-checkbox>
-            <el-checkbox label="二次元"></el-checkbox>
-            <el-checkbox label="汽车"></el-checkbox>
-            <el-checkbox label="运动"></el-checkbox>
-            <el-checkbox label="科技"></el-checkbox>
-            <el-checkbox label="时尚"></el-checkbox>
-            <el-checkbox label="创意"></el-checkbox>
+          <el-checkbox-group v-model="checked" style="width:100%;margin-top:10px;">
+            <el-checkbox v-for="item in checkList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </template>
       </el-form-item>
-      <el-form-item label="用户" prop="roleName">
-        <el-select v-model="value">
-          <el-option v-for="item in options3"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value">
-          </el-option>
-        </el-select>
+      <el-form-item label="用户ID" prop="userName" :class="{ 'is-required': !dataForm.id }">
+        <el-input v-model="dataForm.userName" placeholder="输入用户ID"></el-input>
       </el-form-item>
-      <el-form-item label="封面" prop="roleName">
+      <el-form-item label="封面" prop="coverImg" :class="{ 'is-required': !dataForm.id }">
         <croppa v-model="myCroppa" :width="160" :height="90"></croppa>
       </el-form-item>
     </el-form>
@@ -80,97 +61,155 @@
 </template>
 
 <script>
-  import { treeDataTranslate } from '@/utils'
+  import {treeDataTranslate} from '@/utils'
+
   export default {
-    data () {
+    data() {
       return {
         myCroppa: {},
-        value:'',
-        options:[{
+        oneClassify: '',
+        twoClassify: '',
+        rank: '1',
+        checked: [],
+        value: '',
+        oneOptions: [{
           value: '选项1',
           label: '一级分类'
         }],
-        options1:[{
+        twoOptions: [{
           value: '选项1',
           label: '二级分类'
         }],
-        options2:[{
-          value: '选项1',
-          label: '分级'
+        rankOptions: [{
+          value: '1',
+          label: '一级'
+        }, {
+          value: '2',
+          label: '二级'
         }],
-        options3:[{
+        options3: [{
           value: '选项1',
           label: '用户'
         }],
-        checkList: [],
+        checkList: [{
+          name: '',
+          id: ''
+        }],
         visible: false,
-        menuList: [],
-        menuListTreeProps: {
-          label: 'name',
-          children: 'children'
-        },
         dataForm: {
           id: 0,
-          roleName: '',
-          remark: ''
+          remark: '',
+          title: '',
+          userName: ''
         },
         dataRule: {
-          roleName: [
-            { required: true, message: '角色名称不能为空', trigger: 'blur' }
+          title: [
+            {required: true, message: '标题不能为空', trigger: 'blur'}
+          ],
+          userName: [
+            {required: true, message: '用户ID不能为空', trigger: 'blur'}
+          ],
+          channel: [
+            {required: true, message: '频道不能为空', trigger: 'blur'}
+          ],
+          coverImg: [
+            {required: true, message: '封面不能为空', trigger: 'blur'}
           ]
-        },
-        tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
+        }
       }
     },
     methods: {
-      init (id) {
+      init(id) {
         this.dataForm.id = id || 0
-//        this.$http({
-//          url: this.$http.adornUrl('/sys/menu/list'),
-//          method: 'get',
-//          params: this.$http.adornParams()
-//        }).then(({data}) => {
-//          this.menuList = treeDataTranslate(data, 'menuId')
-//        }).then(() => {
-          this.visible = true
-//          this.$nextTick(() => {
-//            this.$refs['dataForm'].resetFields()
-//            this.$refs.menuListTree.setCheckedKeys([])
-//          })
-//        }).then(() => {
-//          if (this.dataForm.id) {
-//            this.$http({
-//              url: this.$http.adornUrl(`/sys/role/info/${this.dataForm.id}`),
-//              method: 'get',
-//              params: this.$http.adornParams()
-//            }).then(({data}) => {
-//              if (data && data.code === 0) {
-//                this.dataForm.roleName = data.role.roleName
-//                this.dataForm.remark = data.role.remark
-//                var idx = data.role.menuIdList.indexOf(this.tempKey)
-//                if (idx !== -1) {
-//                  data.role.menuIdList.splice(idx, data.role.menuIdList.length - idx)
-//                }
-//                this.$refs.menuListTree.setCheckedKeys(data.role.menuIdList)
-//              }
-//            })
-//          }
-//        })
+        this.visible = true
+        // 分类
+        this.$http({
+          url: this.$http.adornUrl('/mcn/getClassify'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'token': this.$cookie.get('token')
+          })
+        }).then(({data}) => {
+          var classifyList = data.data
+          var oneClassifyList = ''
+          var twoClassifyList = [];
+//          console.log(classifyList)
+          for (var i = 0; i < classifyList.length; i++) {
+            oneClassifyList = oneClassifyList + '{"label":"' + classifyList[i].name + '","value":"' + classifyList[i].id + '"}' + ','
+            var storeList = classifyList[i].list;
+            for (var i in storeList) {
+              twoClassifyList.push({
+                label: storeList[i].name,
+                value: storeList[i].id
+              });
+            }
+          }
+          //去除最后一个逗号
+          oneClassifyList = oneClassifyList.substring(0, oneClassifyList.length - 1);
+          oneClassifyList = '[' + oneClassifyList + ']';
+          //将json 字符串转成json对象
+          var obj_oneClassify = JSON.parse(oneClassifyList)
+          this.oneOptions = obj_oneClassify
+          this.twoOptions = twoClassifyList
+        }).then(() => {
+
+          // 频道
+          this.$http({
+            url: this.$http.adornUrl('/mcn/getType'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'type': 1,
+              'token': this.$cookie.get('token')
+            })
+          }).then(({data}) => {
+            if (data.resultCode == 0) {
+              this.checkList = data.data
+            }
+          })
+
+          this.$http({
+            url: this.$http.adornUrl(`/mcn/newsinfo`),
+            method: 'post',
+            data: this.$http.adornData({
+              'id': this.dataForm.id,
+              'token': this.$cookie.get('token')
+            })
+          }).then(({data}) => {
+            console.log(data)
+            if (data.resultCode == 0) {
+              this.dataForm.id = data.data.id
+              this.dataForm.title = data.data.title
+              var storeListOne = this.oneOptions;
+              for (var i in storeListOne) {
+                if (storeListOne[i].value == data.data.classify1) {
+                  this.oneClassify = storeListOne[i].label
+                }
+              }
+              var storeListTwo = this.twoOptions;
+              for (var i in storeListTwo) {
+                if (storeListTwo[i].value == data.data.classify2) {
+                  this.twoClassify = storeListTwo[i].label
+                }
+              }
+              this.dataForm.userName = data.data.pgcid
+              console.log(this.myCroppa)
+            }
+          })
+        })
       },
       // 表单提交
-      dataFormSubmit () {
+      dataFormSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/mcn/updeateType'),
+              url: this.$http.adornUrl('/mcn/newsinfo'),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id,
-                'name': this.dataForm.roleName,
                 'token': this.$cookie.get('token')
               })
             }).then(({data}) => {
-              console.log(data,2626)
+//              console.log(data,2626)
               if (data.resultCode == 0) {
                 this.$message({
                   message: '操作成功',

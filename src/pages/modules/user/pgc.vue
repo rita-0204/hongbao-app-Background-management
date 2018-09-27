@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addHander()">新增</el-button>
+        <el-button type="primary" @click="addEditHander()">新增</el-button>
       </el-form-item>
     </el-form>
     <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
@@ -29,7 +29,7 @@
             align="center"
             width="80">
             <template slot-scope="scope">
-              <img :src="scope.row.headUrl" width="40" height="40" class="head_pic"/>
+              <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
             </template>
           </el-table-column>
           <el-table-column
@@ -51,6 +51,7 @@
             header-align="center"
             align="center"
             width="60"
+            :formatter="formatSex"
             label="性别">
           </el-table-column>
           <el-table-column
@@ -58,20 +59,23 @@
             header-align="center"
             align="center"
             width="60"
+            :formatter="formatType"
             label="类型">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="classify"
             header-align="center"
             align="center"
             width="100"
+            :formatter="formatClassify"
             label="一级分类">
           </el-table-column>
           <el-table-column
             prop="rank"
             header-align="center"
             align="center"
-            width="160"
+            width="60"
+            :formatter="formatRank"
             label="分级">
           </el-table-column>
           <el-table-column
@@ -82,14 +86,22 @@
             label="爬虫链接">
           </el-table-column>
           <el-table-column
+            prop="status"
+            header-align="center"
+            align="center"
+            width="100"
+            :formatter="formatStatus"
+            label="状态">
+          </el-table-column>
+          <el-table-column
             fixed="right"
             header-align="center"
             align="center"
             width="100"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="edit(scope.row.id)">编辑</el-button>
-              <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)">删除</el-button>
+              <el-button type="text" size="small" @click="addEditHander(scope.row.id)">编辑</el-button>
+              <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -104,15 +116,12 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <add-update v-if="addVisible" ref="add" @refreshDataList="getDataList"></add-update>
-    <edit-update v-if="editVisible" ref="edit" @refreshDataList="getDataList"></edit-update>
+    <add-or-edit-update v-if="addEditVisible" ref="addEdit" @refreshDataList="getDataList"></add-or-edit-update>
   </div>
 </template>
 
 <script>
-  import AddUpdate from './pgc-add'
-  import editUpdate from './pgc-edit'
-
+  import AddOrEditUpdate from './pgc-add'
   export default {
     data () {
       return {
@@ -124,19 +133,14 @@
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
-        editVisible:false,
-        addVisible: false,
+        addEditVisible: false,
         dataListSelections: [],
         activeName2: 'first',
         typeName: 0
       }
     },
     components: {
-      AddUpdate,
-      editUpdate
-    },
-    created(){
-//      console.log(333,this.cookie.get('token'))
+      AddOrEditUpdate
     },
     activated () {
       this.getDataList()
@@ -144,9 +148,43 @@
     methods: {
       formatSex: function (row, column, cellValue) {
         if (cellValue == "1"){
-          return '下线';
-        }else if (cellValue == "0"){
+          return '男';
+        }else if (cellValue == "2"){
+          return '女';
+        } else if (cellValue == "0"){
+          return '未知';
+        }
+      },
+      formatType: function (row, column, cellValue) {
+        if (cellValue == "0"){
           return '正常';
+        }else if (cellValue == "1"){
+          return '马甲';
+        }
+      },
+      formatClassify: function (row, column, cellValue) {
+        if (cellValue == "1"){
+          return '一级分类';
+        }else if (cellValue == "2"){
+          return '二级分类';
+        }
+      },
+      formatRank: function (row, column, cellValue) {
+        if (cellValue == "1"){
+          return '一级';
+        }else if (cellValue == "2"){
+          return '二级';
+        }
+      },
+      formatStatus: function (row, column, cellValue) {
+        if (cellValue == "0"){
+          return '待审核';
+        }else if (cellValue == "1"){
+          return '审核中';
+        }else if (cellValue == "2"){
+          return '审核通过';
+        }else if (cellValue == "3"){
+          return '审核不通过';
         }
       },
       handleClick(tab, event) {
@@ -157,22 +195,15 @@
         }
         this.getDataList ()
       },
-      // 新增
-      addHander () {
-        this.addVisible = true
+      // 新增 编辑
+      addEditHander (id) {
+        this.addEditVisible = true
         this.$nextTick(() => {
-          this.$refs.add.init()
-        })
-      },
-      // 编辑
-      edit (id) {
-        this.editVisible = true
-        this.$nextTick(() => {
-          this.$refs.edit.init(id)
+          this.$refs.addEdit.init(id)
         })
       },
       // 获取数据列表
-      getDataList () {
+      getDataList (index) {
         this.dataListLoading = true
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
@@ -186,7 +217,7 @@
                 'token': this.$cookie.get('token')
               })
             }).then(({data}) => {
-              console.log(data)
+//              console.log(data)
               if (data.resultCode == 0) {
                 this.dataList = data.data.list
                 this.totalPage = data.data.total
@@ -209,6 +240,39 @@
       currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
+      },
+      // 删除
+      deleteHandle (id,index) {
+        var userIds = id ? [id] : this.dataListSelections.map(item => {
+          return item.userId
+        })
+        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/mcn/delpgc'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'id': id,
+              'token': this.$cookie.get('token')
+            })
+          }).then(({data}) => {
+            if (data.resultCode == 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        }).catch(() => {})
       }
     }
   }

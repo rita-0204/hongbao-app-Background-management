@@ -44,8 +44,16 @@
         captchaPath: ''
       }
     },
-    created () {
-
+    computed:{
+      //得到管理员name
+      userName:{
+        get(){
+          return this.$store.state.user.name //接收store储存数据
+        },
+        set(val){
+          this.$store.commit('user/updateName',val) //向store/同步提交
+        }
+      }
     },
     methods: {
       // 提交表单  1、提交用户名和密码，后台返token给我，我将token 存到cookie  2、成功后跳转到主页home
@@ -63,6 +71,7 @@
               console.log(data)
 //              console.log(JSON.parse(data))
               if (data.resultCode == 0) {
+                this.userName = data.data.username
                 this.$cookie.set('token', data.data.token)
                 this.$router.replace({ name: 'home' })
               } else {

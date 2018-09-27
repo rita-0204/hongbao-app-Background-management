@@ -21,6 +21,7 @@
           <el-table-column
             label="用户头像"
             header-align="center"
+            label-class-name="colorLabel"
             align="center"
             width="80">
               <template slot-scope="scope">
@@ -28,16 +29,18 @@
               </template>
           </el-table-column>
           <el-table-column
-            prop="id"
+            prop="userid"
             header-align="center"
             align="center"
             width="50"
+            label-class-name="colorLabel"
             label="用户ID">
           </el-table-column>
           <el-table-column
             prop="nickname"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="100"
             label="用户昵称">
           </el-table-column>
@@ -45,6 +48,7 @@
             prop="content"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="235"
             label="评论内容">
           </el-table-column>
@@ -52,6 +56,7 @@
             prop="title"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="250"
             label="内容标题">
           </el-table-column>
@@ -59,6 +64,7 @@
             prop="type"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="50"
             :formatter="formatSex"
             label="内容类型">
@@ -67,7 +73,9 @@
             prop="creatdate"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             width="160"
+            :formatter="formatData"
             label="评论时间">
           </el-table-column>
           <el-table-column
@@ -75,6 +83,7 @@
             header-align="center"
             align="center"
             width="100"
+            label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">通过</el-button>
@@ -97,6 +106,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -117,6 +127,9 @@
       this.getDataList()
     },
     methods: {
+      formatData(data){
+        return moment(data.creatdate).format('YYYY-MM-DD HH:mm:ss')
+      },
       formatSex: function (row, column, cellValue) {
         if (cellValue == "3"){
           return '视频';
@@ -125,29 +138,34 @@
         }
       },
       UpdateHandle(id,status){
-        this.$http({
-          url: this.$http.adornUrl('/mcn/updateComment'),
-          method: 'post',
-          data: this.$http.adornData({
-            'id': id,
-            'status': status ,//2是不通过  3是通过
-            'token': this.$cookie.get('token')
-          })
-        }).then(({data}) => {
-          console.log(data)
-          if (data.resultCode == 0) {
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-                this.visible = false
-                this.getDataList()
-              }
+        this.$confirm(`确定对[id=${id}]进行操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/mcn/updateComment'),
+            method: 'post',
+            data: this.$http.adornData({
+              'id': id,
+              'status': status,//2是不通过  3是通过
+              'token': this.$cookie.get('token')
             })
-          } else {
-            this.$message.error(data.data.msg)
-          }
+          }).then(({data}) => {
+            if (data.resultCode == 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.data.msg)
+            }
+          })
         })
       },
       handleClick(tab, event) {
@@ -163,7 +181,7 @@
         this.dataListLoading = true
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            console.log(this.dataForm.userid,this.dataForm.nickname)
+//            console.log(this.dataForm.userid,this.dataForm.nickname)
             this.$http({
               url: this.$http.adornUrl('/mcn/getselectlistcomment'),
               method: 'get',
@@ -174,7 +192,7 @@
                 'token': this.$cookie.get('token')
               })
             }).then(({data}) => {
-              console.log(data)
+//              console.log(data)
               if (data.resultCode == 0) {
                 this.dataList = data.data.list
                 this.totalPage = data.data.total

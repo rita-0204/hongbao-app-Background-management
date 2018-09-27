@@ -1,14 +1,11 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增' : '添加子分类'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="频道名称" prop="roleName">
-        <el-input v-model="dataForm.roleName" placeholder="频道名称"></el-input>
-      </el-form-item>
-      <el-form-item label="序号" prop="roleNum" :class="{ 'is-required': !dataForm.id }">
-        <el-input v-model="dataForm.roleNum" placeholder="序号"></el-input>
+      <el-form-item label="分类名称" prop="roleName">
+        <el-input v-model="dataForm.roleName" placeholder="分类名称"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -35,17 +32,14 @@
         dataForm: {
           id: 0,
           roleName: '',
-          remark: '',
-          roleNum: ''
+          remark: ''
         },
         dataRule: {
           roleName: [
-            { required: true, message: '频道名称不能为空', trigger: 'blur' }
-          ],
-          roleNum: [
-            { required: true, message: '序号不能为空', trigger: 'blur' }
+            { required: true, message: '分类名称不能为空', trigger: 'blur' }
           ]
-        }
+        },
+        pidLable: ''
       }
     },
     methods: {
@@ -57,12 +51,16 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            if(!this.dataForm.id){
+              this.pidLable = 0
+            }else{
+              this.pidLable = this.dataForm.id
+            }
             this.$http({
-              url: this.$http.adornUrl('/mcn/updeateType'),
+              url: this.$http.adornUrl('/mcn/insertClassify'),
               method: 'post',
               data: this.$http.adornData({
-                'sort': this.dataForm.roleNum,
-                'id': this.dataForm.id,
+                'pid': this.pidLable,
                 'name': this.dataForm.roleName,
                 'token': this.$cookie.get('token')
               })
@@ -78,7 +76,7 @@
                   }
                 })
               } else {
-                this.$message.error(data.msg)
+                this.$message.error(data.data.msg)
               }
             })
           }

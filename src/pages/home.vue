@@ -7,7 +7,7 @@
       <div class="home">
         <HomeNavbar></HomeNavbar>
         <HomeSilderbar></HomeSilderbar>
-        <HomeContent></HomeContent>
+        <HomeContent class="back"></HomeContent>
       </div>
     </template>
   </div>
