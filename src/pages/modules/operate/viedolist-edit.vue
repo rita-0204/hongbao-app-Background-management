@@ -41,7 +41,7 @@
       </el-form-item>
       <el-form-item label="频道" prop="channel" :class="{ 'is-required': !dataForm.id }">
         <template>
-          <el-checkbox-group v-model="checked" style="width:100%;margin-top:10px;">
+          <el-checkbox-group v-model="dataForm.checked" style="width:100%;margin-top:10px;">
             <el-checkbox v-for="item in checkList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </template>
@@ -50,7 +50,11 @@
         <el-input v-model="dataForm.userName" placeholder="输入用户ID"></el-input>
       </el-form-item>
       <el-form-item label="封面" prop="coverImg" :class="{ 'is-required': !dataForm.id }">
-        <croppa v-model="myCroppa" :width="160" :height="90"></croppa>
+        <croppa v-model="croppa"
+                :width="160" :height="90">
+          <img :src="coverImg" alt="" crossOrigin="anonymous" slot="placeholder">
+        </croppa>
+        <el-button type="primary" class="btncutImg" @click="uploadCroppedImage">确认裁剪</el-button>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -66,12 +70,12 @@
   export default {
     data() {
       return {
-        myCroppa: {},
+        croppa: {},
         oneClassify: '',
         twoClassify: '',
         rank: '1',
-        checked: [],
         value: '',
+        coverImg:'',
         oneOptions: [{
           value: '选项1',
           label: '一级分类'
@@ -100,7 +104,8 @@
           id: 0,
           remark: '',
           title: '',
-          userName: ''
+          userName: '',
+          checked: [0,1],
         },
         dataRule: {
           title: [
@@ -108,12 +113,6 @@
           ],
           userName: [
             {required: true, message: '用户ID不能为空', trigger: 'blur'}
-          ],
-          channel: [
-            {required: true, message: '频道不能为空', trigger: 'blur'}
-          ],
-          coverImg: [
-            {required: true, message: '封面不能为空', trigger: 'blur'}
           ]
         }
       }
@@ -175,7 +174,7 @@
               'token': this.$cookie.get('token')
             })
           }).then(({data}) => {
-            console.log(data)
+//            console.log(data)
             if (data.resultCode == 0) {
               this.dataForm.id = data.data.id
               this.dataForm.title = data.data.title
@@ -192,12 +191,47 @@
                 }
               }
               this.dataForm.userName = data.data.pgcid
-              console.log(this.myCroppa)
+              this.dataForm.checked = data.data.newsconcern.split(",").map(Number)
+              this.coverImg = data.data.cover
             }
           })
         })
       },
-      // 表单提交
+      uploadCroppedImage() {
+        var vm = this
+        vm.croppa.generateBlob(
+          file => {
+            console.log(file)
+            var config = {
+              formpost:"formpost",
+              headers: {
+                'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
+              }
+            };
+           var url = this.$http.adornUrl(`/controll/uploadpic?token=${this.$cookie.get('token')}`)
+            console.log(url)
+            this.$http.post(url,{
+              headers: {
+                'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
+              }
+            },config).then(({data}) => {
+
+              console.log(data,9999)
+            })
+          //         that.$http.uploadFile(上传地址, formdata).then(res => {
+          //         console.log(res);
+          //  let data = res.data;
+          //       if (data.status) {
+          //            that.$message.success("保存成功");
+          //            that.dialogVisible = false;
+          //         }
+          //   });
+          },
+            "image/jpeg",
+              0.8
+        ); // 80%压缩文件
+      },
+        // 表单提交
       dataFormSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
@@ -230,3 +264,10 @@
     }
   }
 </script>
+
+<style lang="scss">
+  .btncutImg{
+    float: right;
+    margin: 50px 265px 0 0;
+  }
+</style>
