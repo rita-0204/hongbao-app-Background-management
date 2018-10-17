@@ -1,1 +1,2 @@
-module.exports = file => () => import('@/pages/' + file + '.vue')
+// module.exports = file => () => import('@/pages/' + file + '.vue')
+
