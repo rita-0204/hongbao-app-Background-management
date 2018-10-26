@@ -2,7 +2,7 @@
   <div class="site-wrapper site-page--login">
     <div class="site-content__wrapper">
       <div class="site-content">
-        <div class="login-logo"><b>红包权限系统</b></div>
+        <div class="login-logo"><b>贰头条管理后台</b></div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
           <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>

@@ -3,12 +3,13 @@
     :title="!dataForm.id ? '新增' : '视频编辑'"
     :close-on-click-modal="false"
     :visible.sync="visible">
+    <video ref="video" controls preload="auto"></video>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="80px">
       <el-form-item label="视频ID" prop="remark">
         <el-input v-model="dataForm.id" :disabled="true"></el-input>
       </el-form-item>
-      <el-form-item label="标题" prop="title" :class="{ 'is-required': !dataForm.id }">
+      <el-form-item label="标题" prop="title">
         <el-input v-model="dataForm.title"></el-input>
       </el-form-item>
       <el-form-item label="标签" prop="remark">
@@ -39,21 +40,24 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="频道" prop="channel" :class="{ 'is-required': !dataForm.id }">
+      <el-form-item label="频道" prop="channel" >
         <template>
           <el-checkbox-group v-model="dataForm.checked" style="width:100%;margin-top:10px;">
             <el-checkbox v-for="item in checkList" :label="item.id" :key="item.id">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </template>
       </el-form-item>
-      <el-form-item label="用户ID" prop="userName" :class="{ 'is-required': !dataForm.id }">
+      <el-form-item label="用户ID" prop="userName">
         <el-input v-model="dataForm.userName" placeholder="输入用户ID"></el-input>
       </el-form-item>
-      <el-form-item label="封面" prop="coverImg" :class="{ 'is-required': !dataForm.id }">
-        <croppa v-model="croppa"
-                :width="160" :height="90">
-          <img :src="coverImg" alt="" crossOrigin="anonymous" slot="placeholder">
-        </croppa>
+      <el-form-item label="封面" prop="coverImg">
+        <div class="cut">
+          <vue-cropper ref="cropper" :img="coverImg" :output-size="optionImg.size" :output-type="optionImg.outputType" :info="true" :full="optionImg.full"
+                       :can-move="optionImg.canMove" :can-move-box="optionImg.canMoveBox" :fixed-box="optionImg.fixedBox" :original="optionImg.original"
+                       :auto-crop="optionImg.autoCrop" :auto-crop-width="optionImg.autoCropWidth" :auto-crop-height="optionImg.autoCropHeight" :center-box="optionImg.centerBox"
+                       :high="optionImg.high" ></vue-cropper>
+        </div>
+        <img :src="downImg" alt="" style="position: absolute;right: 80px;top: 0;">
         <el-button type="primary" class="btncutImg" @click="uploadCroppedImage">确认裁剪</el-button>
       </el-form-item>
     </el-form>
@@ -66,11 +70,26 @@
 
 <script>
   import {treeDataTranslate} from '@/utils'
-
+  import { VueCropper }  from 'vue-cropper'
   export default {
     data() {
       return {
-        croppa: {},
+        optionImg: {
+          img: 'https://avatars3.githubusercontent.com/u/15681693',
+          size: 1,
+          full: false,
+          outputType: 'png',
+          canMove: true,
+          fixedBox: false,
+          original: false,
+          canMoveBox: true,
+          autoCrop: true,
+          // 只有自动截图开启 宽度高度才生效
+          autoCropWidth: 160,
+          autoCropHeight: 90,
+          centerBox: false,
+          high: true
+        },
         oneClassify: '',
         twoClassify: '',
         rank: '1',
@@ -111,11 +130,22 @@
           title: [
             {required: true, message: '标题不能为空', trigger: 'blur'}
           ],
+          channel: [
+            {required: true, message: '频道不能为空', trigger: 'blur'}
+          ],
           userName: [
             {required: true, message: '用户ID不能为空', trigger: 'blur'}
+          ],
+          coverImg: [
+            {required: true, message: '请设置封面', trigger: 'blur'}
           ]
-        }
+        },
+        downImg:'',
+        video:''
       }
+    },
+    components: {
+      VueCropper,
     },
     methods: {
       init(id) {
@@ -193,43 +223,17 @@
               this.dataForm.userName = data.data.pgcid
               this.dataForm.checked = data.data.newsconcern.split(",").map(Number)
               this.coverImg = data.data.cover
+              this.$refs.video.src = data.data.video
             }
           })
         })
       },
       uploadCroppedImage() {
-        var vm = this
-        vm.croppa.generateBlob(
-          file => {
-            console.log(file)
-            var config = {
-              formpost:"formpost",
-              headers: {
-                'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
-              }
-            };
-           var url = this.$http.adornUrl(`/controll/uploadpic?token=${this.$cookie.get('token')}`)
-            console.log(url)
-            this.$http.post(url,{
-              headers: {
-                'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
-              }
-            },config).then(({data}) => {
-
-              console.log(data,9999)
-            })
-          //         that.$http.uploadFile(上传地址, formdata).then(res => {
-          //         console.log(res);
-          //  let data = res.data;
-          //       if (data.status) {
-          //            that.$message.success("保存成功");
-          //            that.dialogVisible = false;
-          //         }
-          //   });
-          },
-            "image/jpeg",
-              0.8
-        ); // 80%压缩文件
+        // 输出
+        this.$refs.cropper.getCropData((data) => {
+//          console.log(data)
+          this.downImg = data
+        })
       },
         // 表单提交
       dataFormSubmit() {
@@ -269,5 +273,9 @@
   .btncutImg{
     float: right;
     margin: 50px 265px 0 0;
+  }
+  .cut{
+    width:160px;
+    height:90px;
   }
 </style>

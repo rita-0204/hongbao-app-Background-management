@@ -1,8 +1,8 @@
 <template>
   <div class="mod-role">
     <div class="main-title-top">
-        <label><span>视频ID</span><input type="text"></label>
-        <label><span>视频标题</span><input type="text"></label>
+        <label><span>视频ID</span><input type="text" v-model="videoId"></label>
+        <label><span>视频标题</span><input type="text" v-model="videoName"></label>
         <label>
           <span>所属频道</span>
           <select>
@@ -19,8 +19,8 @@
             <option value="">二级分类</option>
           </select>
         </label>
-        <label><span>用户ID</span><input type="text"></label>
-        <label><span>用户昵称</span><input type="text"></label>
+        <label><span>用户ID</span><input type="text" v-model="userId"></label>
+        <label><span>用户昵称</span><input type="text" v-model="userName"></label>
         <label>
           <span>内容状态</span>
           <select>
@@ -31,7 +31,7 @@
           <span>发布时间</span>
           <div class="block">
             <el-date-picker
-              v-model="value6"
+              v-model="dateValue"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -39,7 +39,7 @@
             </el-date-picker>
           </div>
         </label>
-        <div class="btnCheck">查 询</div>
+        <div class="btnCheck" @click="getDataList">查 询</div>
     </div>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
       <el-tab-pane label="视频列表" name="first">
@@ -180,10 +180,11 @@
   export default {
     data () {
       return {
-        value6: '',
-        dataForm: {
-          roleName: ''
-        },
+        videoId:'',
+        videoName:'',
+        userId:'',
+        userName:'',
+        dateValue: [new Date(new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000), new Date(new Date().setHours(23, 59, 59, 59))],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -229,10 +230,16 @@
           data: this.$http.adornData({
             'id': 263,
             'layoutType': 4,// 4是视频  否则为图文
-            'token': this.$cookie.get('token')
+            'token': this.$cookie.get('token'),
+            'videoId': this.videoId,
+            'videoName': this.videoName,
+            'userId': this.userId,
+            'userName': this.userName,
+            'startDate': moment(this.dateValue[0]).format('YYYY-MM-DD HH:mm:ss'),
+            'endDate': moment(this.dateValue[1]).format('YYYY-MM-DD HH:mm:ss')
           })
         }).then(({data}) => {
-          console.log(data)
+//          console.log(data)
           if (data.resultCode == 0) {
             this.dataList = data.data.list
             this.totalPage = data.data.total

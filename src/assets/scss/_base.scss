@@ -119,7 +119,7 @@ body{
   background:#f1f4f5;
 }
 
-.el-tabs__header{
+.new-content .el-tabs__header{
   position: fixed;
   top: 50px;
   left: 230px;
@@ -134,13 +134,13 @@ body{
   position: static;
   box-shadow: none;
 }
-.el-card__body{
+.is-always-shadow .el-card__body{
   padding:0;
 }
 .mod-role{
   padding:20px;
 }
-.site-tabs__tools {
+.new-content .new-tools {
   position: fixed;
   top: 50px;
   right: 0;

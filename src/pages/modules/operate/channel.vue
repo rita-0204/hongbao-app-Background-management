@@ -99,7 +99,7 @@
               label-class-name="colorLabel"
               label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id)">修改</el-button>
                 <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                            v-if="scope.row.status == 1 ">
                   上线

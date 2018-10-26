@@ -1,5 +1,5 @@
 <template>
-  <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
+  <main class="site-content new-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
     <el-tabs
       v-if="$route.meta.isTab"
@@ -7,7 +7,7 @@
       :closable="true"
       @tab-click="selectedTabHandle"
       @tab-remove="removeTabHandle">
-      <el-dropdown class="site-tabs__tools" :show-timeout="0">
+      <el-dropdown class="site-tabs__tools new-tools" :show-timeout="0">
         <i class="el-icon-arrow-down el-icon--right"></i>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="tabsCloseCurrentHandle">关闭当前标签页</el-dropdown-item>

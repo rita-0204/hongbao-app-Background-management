@@ -1,11 +1,19 @@
 <template>
   <div class="mod-role">
-    <div class="main-title-top">
-      <label><span>用户ID</span><input type="text"></label>
-      <label><span>用户昵称</span><input type="text"></label>
-      <label><span>手机号码</span><input type="text"></label>
-      <div class="btnCheck">查 询</div>
-    </div>
+    <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item label="用户ID">
+        <el-input v-model="dataForm.id" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="用户昵称">
+        <el-input v-model="dataForm.nickname" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="手机号码">
+        <el-input v-model="dataForm.mobile" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
       <el-tab-pane label="普通用户" name="first">
         <el-table
@@ -139,6 +147,7 @@
           method: 'get',
           params: this.$http.adornParams({
             'type': this.typeName,
+            'token': this.$cookie.get('token')
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {

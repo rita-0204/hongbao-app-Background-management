@@ -12,12 +12,16 @@ import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'  //本地储存
 import Croppa from 'vue-croppa'
 import 'vue-croppa/dist/vue-croppa.css'
+import VueCropper from 'vue-cropper'
 
-
+/*video*/
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer);
 
 Vue.use(ElementUI);
 Vue.use(VueCookie)
 Vue.use(Croppa)
+Vue.use(VueCropper)
 Vue.config.productionTip = false
 
 
