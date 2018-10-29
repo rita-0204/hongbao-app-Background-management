@@ -4,8 +4,11 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="频道名称" prop="roleName">
+      <el-form-item v-if="numType == 1" label="频道名称" prop="roleName">
         <el-input v-model="dataForm.roleName" placeholder="频道名称"></el-input>
+      </el-form-item>
+      <el-form-item v-if="numType == 0" label="图文名称" prop="roleName">
+        <el-input v-model="dataForm.roleName" placeholder="图文名称"></el-input>
       </el-form-item>
       <el-form-item label="序号" prop="roleNum" :class="{ 'is-required': !dataForm.id }">
         <el-input v-model="dataForm.roleNum" placeholder="序号"></el-input>
@@ -26,6 +29,7 @@
   export default {
     data () {
       return {
+        numType:'',
         visible: false,
         menuList: [],
         menuListTreeProps: {
@@ -49,9 +53,12 @@
       }
     },
     methods: {
-      init (id) {
+      init (id,name,sort, num) {
         this.dataForm.id = id || 0
         this.visible = true
+        this.dataForm.roleNum = sort
+        this.dataForm.roleName = name
+        this.numType = num
       },
       // 表单提交
       dataFormSubmit () {
@@ -61,10 +68,10 @@
               url: this.$http.adornUrl('/mcn/updeateType'),
               method: 'post',
               data: this.$http.adornData({
-                'sort': this.dataForm.roleNum,
-                'id': this.dataForm.id,
-                'name': this.dataForm.roleName,
-                'token': this.$cookie.get('token')
+                sort: this.dataForm.roleNum,
+                id: this.dataForm.id,
+                name: this.dataForm.roleName,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
               if (data.resultCode == 0) {

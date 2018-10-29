@@ -5,7 +5,7 @@
     :visible.sync="visible">
     <video ref="video" controls preload="auto"></video>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
-             label-width="80px" class="formWidth">
+             label-width="80px">
       <el-form-item label="视频ID" prop="remark">
         <el-input v-model="dataForm.id" :disabled="true"></el-input>
       </el-form-item>
@@ -235,7 +235,7 @@
           this.downImg = data
         })
       },
-        // 表单提交
+      // 表单提交
       dataFormSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
@@ -270,12 +270,6 @@
 </script>
 
 <style lang="scss">
-  .el-dialog{
-    width:72%;
-  }
-  .formWidth{
-    width:600px;
-  }
   .btncutImg{
     float: right;
     margin: 50px 265px 0 0;
@@ -283,10 +277,5 @@
   .cut{
     width:160px;
     height:90px;
-  }
-  video{
-    position: absolute;
-    right:30px;
-    /*top:0;*/
   }
 </style>

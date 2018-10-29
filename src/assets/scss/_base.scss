@@ -183,3 +183,13 @@ body{
 .colorRow{
   color: red;
 }
+.checkType .el-input__inner{
+  width:85px;
+  height:20px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.checkType .el-input__icon{
+  line-height:20px;
+}

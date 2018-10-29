@@ -46,7 +46,7 @@
               width="250"
               label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id)">修改</el-button>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,scope.row.name,scope.row.sort,0)">修改</el-button>
                 <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                 v-if="scope.row.status == 1 ">
                   上线
@@ -99,7 +99,7 @@
               label-class-name="colorLabel"
               label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id)">修改</el-button>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,scope.row.name,scope.row.sort,1)">修改</el-button>
                 <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                            v-if="scope.row.status == 1 ">
                   上线
@@ -181,10 +181,10 @@
         })
       },
       // 新增 / 修改
-      UpdateHandle (id) {
+      UpdateHandle (id,name,sort, num) {
         this.UpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.Update.init(id)
+          this.$refs.Update.init(id,name,sort, num)
         })
       },
       addHandle (id) {
@@ -198,7 +198,7 @@
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.roleId
         })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行${status == 0 ? '上线' : '下线'}操作?`, '提示', {
+        this.$confirm(`确定对[id=${ids.join(',')}]进行${status == 1 ? '上线' : '下线'}操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

@@ -5,9 +5,13 @@
         <label><span>视频标题</span><input type="text" v-model="videoName"></label>
         <label>
           <span>所属频道</span>
-          <select>
-            <option value="">全部</option>
-          </select>
+          <el-select v-model="channel" placeholder="全部" class="checkType" style="margin-right:10px;">
+            <el-option v-for="item in checkList"
+                       :key="item.id"
+                       :label="item.name"
+                       :value="item.id">
+            </el-option>
+          </el-select>
         </label>
         <label class="content-class">
           <span>内容分类</span>
@@ -23,12 +27,16 @@
         <label><span>用户昵称</span><input type="text" v-model="userName"></label>
         <label>
           <span>内容状态</span>
-          <select>
-            <option value="">全部</option>
-          </select>
+          <el-select v-model="state" placeholder="全部" class="checkType" style="margin-right:10px;">
+            <el-option v-for="item in stateList"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value">
+            </el-option>
+          </el-select>
         </label>
         <label class="content-class">
-          <span>发布时间</span>
+          <span @click="addOrUpdateHandle()">发布时间</span>
           <div class="block">
             <el-date-picker
               v-model="dateValue"
@@ -123,7 +131,7 @@
             header-align="center"
             align="center"
             class-name="colorRow"
-            width="60"
+            width="50"
             label="状态"
             label-class-name="colorLabel"
             :formatter="formatSex">
@@ -132,7 +140,7 @@
             prop="name"
             header-align="center"
             align="left"
-            width="145"
+            width="140"
             label-class-name="colorLabel"
             label="数据">
             <template slot-scope="scope">
@@ -180,20 +188,34 @@
   export default {
     data () {
       return {
+        channel:'',
         videoId:'',
         videoName:'',
         userId:'',
         userName:'',
         dateValue: [new Date(new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000), new Date(new Date().setHours(23, 59, 59, 59))],
+//        dateValue:[],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false,
+        addOrUpdateVisible: true,
         activeName2: 'first',
-        typeName: 0
+        typeName: 0,
+        checkList: [{
+          name: '',
+          id: ''
+        }],
+        stateList: [{
+          value: '0',
+          label: '正常'
+        },{
+          value: '1',
+          label: '下线'
+        }],
+        state: '0'
       }
     },
     components: {
@@ -228,15 +250,16 @@
           url: this.$http.adornUrl('/mcn/selnewslist'),
           method: 'post',
           data: this.$http.adornData({
-            'id': 263,
-            'layoutType': 4,// 4是视频  否则为图文
-            'token': this.$cookie.get('token'),
-            'videoId': this.videoId,
-            'videoName': this.videoName,
-            'userId': this.userId,
-            'userName': this.userName,
-            'startDate': moment(this.dateValue[0]).format('YYYY-MM-DD HH:mm:ss'),
-            'endDate': moment(this.dateValue[1]).format('YYYY-MM-DD HH:mm:ss')
+            type:3,
+            token: this.$cookie.get('token'),
+            id: this.videoId,
+            title: this.videoName,
+            pgcid: this.userId,
+            nickname: this.userName,
+            datestart: moment(this.dateValue[0]).format('YYYY-MM-DD HH:mm:ss'),
+            dateend: moment(this.dateValue[1]).format('YYYY-MM-DD HH:mm:ss'),
+            status: this.state,
+            newstype: this.channel
           })
         }).then(({data}) => {
 //          console.log(data)
@@ -248,6 +271,20 @@
             this.totalPage = 0
           }
           this.dataListLoading = false
+        })
+
+        // 频道
+        this.$http({
+          url: this.$http.adornUrl('/mcn/getType'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'type': 1,
+            'token': this.$cookie.get('token')
+          })
+        }).then(({data}) => {
+          if (data.resultCode == 0) {
+            this.checkList = data.data
+          }
         })
       },
       // 每页数
@@ -273,7 +310,7 @@
         var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.roleId
         })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行${status == 0 ? '上线' : '下线'}操作?`, '提示', {
+        this.$confirm(`确定对[id=${ids.join(',')}]进行${status == 1 ? '上线' : '下线'}操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

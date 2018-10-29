@@ -138,7 +138,7 @@
         }
       },
       UpdateHandle(id,status){
-        this.$confirm(`确定对[id=${id}]进行操作?`, '提示', {
+        this.$confirm(`确定对[id=${id}]进行${status == 2 ? '通过' : '不通过'}操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
