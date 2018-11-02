@@ -15,7 +15,6 @@
             prop="name"lef
             header-align="center"
             treeKey="id"
-            width="500"
             class-name="pad-left"
             label-class-name="colorLabel"
             label="分类名称">
@@ -24,7 +23,6 @@
             prop="createtime"
             header-align="center"
             align="center"
-            width="260"
             :formatter="formatData"
             label-class-name="colorLabel"
             :show-overflow-tooltip="true"
@@ -33,8 +31,8 @@
           <el-table-column
             fixed="right"
             header-align="center"
-            align="left"
-            width="220"
+            align="center"
+            width="300"
             label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">

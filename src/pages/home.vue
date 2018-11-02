@@ -49,13 +49,13 @@
           }
       },
       created() {
-//        this.getList();
+        this.getList();
       },
       methods: {
         //请注管理员信息  1、请求不到东西，提示加载中，直到请求到关闭加载toast
         getList(){
           this.$http({
-            url: this.$http.adornUrl('/sys/user/info'),
+            url: this.$http.adornUrl('/controll/get/user'),
             method: 'get'
           }).then(({data}) => {
             if(data.code == 0){

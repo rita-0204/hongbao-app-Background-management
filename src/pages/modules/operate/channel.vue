@@ -187,10 +187,10 @@
           this.$refs.Update.init(id,name,sort, num)
         })
       },
-      addHandle (id) {
+      addHandle (type) {
         this.addVisible = true
         this.$nextTick(() => {
-          this.$refs.add.init(id)
+          this.$refs.add.init(type)
         })
       },
       //上线

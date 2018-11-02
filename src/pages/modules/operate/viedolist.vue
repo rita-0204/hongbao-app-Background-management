@@ -1,54 +1,116 @@
 <template>
-  <div class="mod-role">
-    <div class="main-title-top">
-        <label><span>视频ID</span><input type="text" v-model="videoId"></label>
-        <label><span>视频标题</span><input type="text" v-model="videoName"></label>
-        <label>
-          <span>所属频道</span>
-          <el-select v-model="channel" placeholder="全部" class="checkType" style="margin-right:10px;">
-            <el-option v-for="item in checkList"
-                       :key="item.id"
-                       :label="item.name"
-                       :value="item.id">
-            </el-option>
-          </el-select>
-        </label>
-        <label class="content-class">
-          <span>内容分类</span>
-          <select>
-            <option value="">一级分类</option>
-          </select>
-          <i></i>
-          <select>
-            <option value="">二级分类</option>
-          </select>
-        </label>
-        <label><span>用户ID</span><input type="text" v-model="userId"></label>
-        <label><span>用户昵称</span><input type="text" v-model="userName"></label>
-        <label>
-          <span>内容状态</span>
-          <el-select v-model="state" placeholder="全部" class="checkType" style="margin-right:10px;">
-            <el-option v-for="item in stateList"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
-        </label>
-        <label class="content-class">
-          <span @click="addOrUpdateHandle()">发布时间</span>
-          <div class="block">
-            <el-date-picker
-              v-model="dateValue"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </div>
-        </label>
-        <div class="btnCheck" @click="getDataList">查 询</div>
-    </div>
+  <div class="mod-role checkViedo">
+    <el-form :inline="true">
+      <el-form-item label="视频ID">
+        <el-input v-model="videoId" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="视频标题">
+        <el-input v-model="videoName" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="所属频道">
+        <el-select v-model="channel" placeholder="全部">
+          <el-option v-for="item in checkList"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="内容分类">
+        <el-select v-model="channel" placeholder="全部">
+          <el-option v-for="item in checkList"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+        <el-select v-model="channel" placeholder="全部">
+          <el-option v-for="item in checkList"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="用户ID">
+        <el-input v-model="userId" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="用户昵称">
+        <el-input v-model="userName" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="内容状态">
+        <el-select v-model="state" placeholder="全部">
+          <el-option v-for="item in stateList"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="发布时间">
+        <el-date-picker
+          v-model="dateValue"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['00:00:00', '23:59:59']">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+      </el-form-item>
+    </el-form>
+    <!--<div class="main-title-top">-->
+        <!--<label><span>视频ID</span><input type="text" v-model="videoId"></label>-->
+        <!--<label><span>视频标题</span><input type="text" v-model="videoName"></label>-->
+        <!--<label>-->
+          <!--<span>所属频道</span>-->
+          <!--<el-select v-model="channel" placeholder="全部" class="checkType" style="margin-right:10px;">-->
+            <!--<el-option v-for="item in checkList"-->
+                       <!--:key="item.id"-->
+                       <!--:label="item.name"-->
+                       <!--:value="item.id">-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+        <!--</label>-->
+        <!--<label class="content-class">-->
+          <!--<span>内容分类</span>-->
+          <!--<select>-->
+            <!--<option value="">一级分类</option>-->
+          <!--</select>-->
+          <!--<i></i>-->
+          <!--<select>-->
+            <!--<option value="">二级分类</option>-->
+          <!--</select>-->
+        <!--</label>-->
+        <!--<label><span>用户ID</span><input type="text" v-model="userId"></label>-->
+        <!--<label><span>用户昵称</span><input type="text" v-model="userName"></label>-->
+        <!--<label>-->
+          <!--<span>内容状态</span>-->
+          <!--<el-select v-model="state" placeholder="全部" class="checkType" style="margin-right:10px;">-->
+            <!--<el-option v-for="item in stateList"-->
+                       <!--:key="item.value"-->
+                       <!--:label="item.label"-->
+                       <!--:value="item.value">-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+        <!--</label>-->
+        <!--<label class="content-class">-->
+          <!--<span>发布时间</span>-->
+          <!--<div class="block">-->
+            <!--<el-date-picker-->
+              <!--v-model="dateValue"-->
+              <!--type="daterange"-->
+              <!--range-separator="至"-->
+              <!--start-placeholder="开始日期"-->
+              <!--end-placeholder="结束日期"-->
+              <!--:default-time="['00:00:00', '23:59:59']">-->
+            <!--</el-date-picker>-->
+          <!--</div>-->
+        <!--</label>-->
+        <!--<div class="btnCheck" @click="getDataList">查 询</div>-->
+    <!--</div>-->
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
       <el-tab-pane label="视频列表" name="first">
         <el-table
@@ -79,15 +141,14 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="130"
             label="标题">
           </el-table-column>
           <el-table-column
             prop="typename"
             header-align="center"
             align="center"
-            label-class-name="colorLabel"
             width="60"
+            label-class-name="colorLabel"
             label="频道">
           </el-table-column>
           <el-table-column
@@ -95,7 +156,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="60"
             label="分类">
             <template slot-scope="scope">
               <p>{{scope.row.classify1name}} / {{scope.row.classify2name}}</p>
@@ -106,7 +166,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="80"
             label="用户ID">
           </el-table-column>
           <el-table-column
@@ -114,7 +173,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="90"
             label="用户昵称">
           </el-table-column>
           <el-table-column
@@ -122,7 +180,6 @@
             align="center"
             :formatter="formatData"
             label-class-name="colorLabel"
-            width="160"
             label="发布时间">
           </el-table-column>
           <el-table-column
@@ -131,7 +188,7 @@
             header-align="center"
             align="center"
             class-name="colorRow"
-            width="50"
+            width="60"
             label="状态"
             label-class-name="colorLabel"
             :formatter="formatSex">
@@ -140,7 +197,6 @@
             prop="name"
             header-align="center"
             align="left"
-            width="140"
             label-class-name="colorLabel"
             label="数据">
             <template slot-scope="scope">
@@ -158,7 +214,8 @@
             label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
+              <router-link :to="{path:'viedoEdit',query:{ id:scope.row.id }}" tag="button" style="color:#409EFF;cursor: pointer;">编辑</router-link>
+              <!--<el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>-->
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                          v-if="scope.row.status == 1 ">上线</el-button>
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
@@ -188,13 +245,17 @@
   export default {
     data () {
       return {
+        dataForm: {
+          roleName: ''
+        },
         channel:'',
         videoId:'',
         videoName:'',
         userId:'',
         userName:'',
-        dateValue: [new Date(new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000), new Date(new Date().setHours(23, 59, 59, 59))],
-//        dateValue:[],
+        // 前一年 new Date().setFullYear(new Date().getFullYear()-1)
+//        dateValue: [new Date(new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000), new Date(new Date().setHours(23, 59, 59, 59))],
+        dateValue:[new Date(new Date().setMonth((new Date().getMonth()-1))),new Date(new Date().setHours(23, 59, 59, 59))],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -215,7 +276,9 @@
           value: '1',
           label: '下线'
         }],
-        state: '0'
+        state: '0',
+        datestart:'',
+        dateend:''
       }
     },
     components: {
@@ -259,10 +322,10 @@
             datestart: moment(this.dateValue[0]).format('YYYY-MM-DD HH:mm:ss'),
             dateend: moment(this.dateValue[1]).format('YYYY-MM-DD HH:mm:ss'),
             status: this.state,
-            newstype: this.channel
+            newstype: this.channel,
+            page: this.pageIndex - 1
           })
         }).then(({data}) => {
-//          console.log(data)
           if (data.resultCode == 0) {
             this.dataList = data.data.list
             this.totalPage = data.data.total

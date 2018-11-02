@@ -172,6 +172,7 @@
         this.urlShow = this.$http.adornUrl(`/controll/picshow?token=${this.$cookie.get('token')}`)
         this.dataForm.id = id || 0
         this.visible = true
+//        this.$refs['dataForm'].resetFields()
         if (this.dataForm.id) {
           this.$http({
             url: this.$http.adornUrl('/mcn/getType'),
@@ -182,7 +183,7 @@
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {
-            console.log(data)
+//            console.log(data)
 //              this.dataList = data.data
             } else {
               this.dataList = []

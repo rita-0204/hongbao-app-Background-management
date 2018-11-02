@@ -27,7 +27,7 @@
             label="用户头像"
             header-align="center"
             align="center"
-            width="80">
+            >
             <template slot-scope="scope">
               <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
             </template>
@@ -36,21 +36,18 @@
             prop="id"
             header-align="center"
             align="center"
-            width="100"
             label="用户ID">
           </el-table-column>
           <el-table-column
             prop="nickname"
             header-align="center"
             align="center"
-            width="150"
             label="用户昵称">
           </el-table-column>
           <el-table-column
             prop="sex"
             header-align="center"
             align="center"
-            width="60"
             :formatter="formatSex"
             label="性别">
           </el-table-column>
@@ -58,7 +55,6 @@
             prop="type"
             header-align="center"
             align="center"
-            width="60"
             :formatter="formatType"
             label="类型">
           </el-table-column>
@@ -66,7 +62,6 @@
             prop="classify"
             header-align="center"
             align="center"
-            width="100"
             :formatter="formatClassify"
             label="一级分类">
           </el-table-column>
@@ -74,7 +69,6 @@
             prop="rank"
             header-align="center"
             align="center"
-            width="60"
             :formatter="formatRank"
             label="分级">
           </el-table-column>
@@ -82,14 +76,12 @@
             prop="url"
             header-align="center"
             align="center"
-            width="200"
             label="爬虫链接">
           </el-table-column>
           <el-table-column
             prop="status"
             header-align="center"
             align="center"
-            width="100"
             :formatter="formatStatus"
             label="状态">
           </el-table-column>
@@ -97,7 +89,6 @@
             fixed="right"
             header-align="center"
             align="center"
-            width="100"
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="addEditHander(scope.row.id)">编辑</el-button>

@@ -49,22 +49,23 @@
       }
     },
     methods: {
-      init (id) {
-        this.dataForm.id = id || 0
+      init (type) {
+        this.dataForm.id = type
         this.visible = true
+        this.$refs['dataForm'].resetFields()
       },
       // 表单提交
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/mcn/updeateType'),
+              url: this.$http.adornUrl('/mcn/insertType'),
               method: 'post',
               data: this.$http.adornData({
-                'sort': this.dataForm.roleNum,
-                'id': this.dataForm.id,
-                'name': this.dataForm.roleName,
-                'token': this.$cookie.get('token')
+                type:this.dataForm.id,
+                sort: this.dataForm.roleNum,
+                name: this.dataForm.roleName,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
               if (data.resultCode == 0) {

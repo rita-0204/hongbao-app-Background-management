@@ -23,7 +23,7 @@
             header-align="center"
             label-class-name="colorLabel"
             align="center"
-            width="80">
+            width="100">
               <template slot-scope="scope">
                 <img :src="scope.row.headUrl" width="40" height="40" class="head_pic"/>
               </template>
@@ -32,7 +32,6 @@
             prop="userid"
             header-align="center"
             align="center"
-            width="50"
             label-class-name="colorLabel"
             label="用户ID">
           </el-table-column>
@@ -41,7 +40,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="100"
             label="用户昵称">
           </el-table-column>
           <el-table-column
@@ -49,7 +47,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="235"
             label="评论内容">
           </el-table-column>
           <el-table-column
@@ -57,7 +54,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="250"
             label="内容标题">
           </el-table-column>
           <el-table-column
@@ -65,7 +61,7 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="50"
+            width="80"
             :formatter="formatSex"
             label="内容类型">
           </el-table-column>
@@ -74,7 +70,6 @@
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            width="160"
             :formatter="formatData"
             label="评论时间">
           </el-table-column>
@@ -186,10 +181,10 @@
               url: this.$http.adornUrl('/mcn/getselectlistcomment'),
               method: 'get',
               params: this.$http.adornParams({
-                'nickname': this.dataForm.nickname,
-                'userid': this.dataForm.userid,
-                'page': this.pageIndex - 1,
-                'token': this.$cookie.get('token')
+                nickname: this.dataForm.nickname,
+                userid: this.dataForm.userid,
+                page: this.pageIndex - 1,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
 //              console.log(data)

@@ -24,7 +24,6 @@
           <el-table-column
             header-align="center"
             align="center"
-            width="100"
             label="用户头像">
             <template slot-scope="scope">
               <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
@@ -34,21 +33,18 @@
             prop="id"
             header-align="center"
             align="center"
-            width="100"
             label="用户ID">
           </el-table-column>
           <el-table-column
             prop="nickname"
             header-align="center"
             align="center"
-            width="170"
             label="用户昵称">
           </el-table-column>
           <el-table-column
             prop="mobile"
             header-align="center"
             align="center"
-            width="140"
             label="手机号码">
           </el-table-column>
           <el-table-column
@@ -56,7 +52,6 @@
             header-align="center"
             align="center"
             :formatter="formatSex"
-            width="60"
             label="性别">
           </el-table-column>
           <el-table-column
@@ -64,7 +59,6 @@
             header-align="center"
             align="center"
             :formatter="formatData"
-            width="160"
             label="注册时间">
           </el-table-column>
           <el-table-column
@@ -72,14 +66,12 @@
             header-align="center"
             align="center"
             :formatter="formatTpye"
-            width="100"
             label="类型">
           </el-table-column>
           <el-table-column
             prop="status"
             header-align="center"
             align="center"
-            width="100"
             class-name="colorRow"
             label-class-name="colorLabel"
             :formatter="formatStatus"
@@ -89,7 +81,6 @@
             fixed="right"
             header-align="center"
             align="center"
-            width="100"
             label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="detailHandle(scope.row.id)">详情</el-button>

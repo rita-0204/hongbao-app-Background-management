@@ -158,11 +158,32 @@ body{
 .el-checkbox+.el-checkbox{
   margin-left:0;
 }
-.el-range-editor.el-input__inner{
-  height:23px;
+//.el-range-editor.el-input__inner{
+//  height:23px;
+//}
+//.el-date-editor .el-range__icon,.el-date-editor .el-range-separator,.el-date-editor .el-range__close-icon{
+//  line-height:16px;
+//}
+.checkViedo .el-input--suffix .el-input__inner{
+  padding-right:0;
+  width:120px;
+  height:30px;
+  line-height:30px;
 }
-.el-date-editor .el-range__icon,.el-date-editor .el-range-separator,.el-date-editor .el-range__close-icon{
-  line-height:16px;
+.checkViedo .el-form-item__label,.checkViedo .el-input__icon{
+  line-height:30px;
+}
+.checkViedo .el-button{
+  line-height:6px;
+  height:30px;
+}
+.checkViedo .el-input__inner{
+  height:30px;
+  line-height:30px;
+  width:260px;
+}
+.checkViedo .el-date-editor .el-range-separator{
+  padding:0;
 }
 .el-form-item__content{
   line-height:0;
@@ -192,4 +213,13 @@ body{
 }
 .checkType .el-input__icon{
   line-height:20px;
+}
+.viedo-uploader .el-upload{
+  width:160px;
+  height:90px;
+  position: absolute;
+  top:0;
+}
+.viedo-uploader .el-upload i{
+  display:none;
 }
