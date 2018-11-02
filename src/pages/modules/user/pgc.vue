@@ -147,9 +147,9 @@
         }
       },
       formatType: function (row, column, cellValue) {
-        if (cellValue == "0"){
+        if (cellValue == "1"){
           return '正常';
-        }else if (cellValue == "1"){
+        }else if (cellValue == "0"){
           return '马甲';
         }
       },

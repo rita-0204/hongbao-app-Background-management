@@ -81,8 +81,8 @@
             label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">通过</el-button>
-              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">不通过</el-button>
+              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">通过</el-button>
+              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">不通过</el-button>
             </template>
           </el-table-column>
         </el-table>

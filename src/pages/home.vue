@@ -52,16 +52,18 @@
         this.getList();
       },
       methods: {
-        //请注管理员信息  1、请求不到东西，提示加载中，直到请求到关闭加载toast
+        //请求管理员信息  1、请求不到东西，提示加载中，直到请求到关闭加载toast
         getList(){
           this.$http({
             url: this.$http.adornUrl('/controll/get/user'),
-            method: 'get'
+            method: 'get',
+            params: this.$http.adornParams({
+              token: this.$cookie.get('token')
+            })
           }).then(({data}) => {
-            if(data.code == 0){
-              this.loading = false;
-              this.userId = data.user.userId
-              this.userName = data.user.username
+            if (data.resultCode == 0) {
+                this.userName = data.data.truename
+//              this.$router.push({ name: 'login' })  //重新跳转到登录页
             }
           })
         },

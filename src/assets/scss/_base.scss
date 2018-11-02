@@ -215,10 +215,11 @@ body{
   line-height:20px;
 }
 .viedo-uploader .el-upload{
-  width:160px;
-  height:90px;
+  width: 50px;
+  height: 50px;
   position: absolute;
-  top:0;
+  top: 20px;
+  left: 55px;
 }
 .viedo-uploader .el-upload i{
   display:none;

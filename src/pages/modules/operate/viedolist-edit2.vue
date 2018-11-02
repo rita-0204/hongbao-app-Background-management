@@ -99,14 +99,6 @@
         rank: 1,
         value: '',
         coverImg:'',
-        oneOptions: [{
-          value: '',
-          label: '请选择'
-        }],
-        twoOptions: [{
-          value: '',
-          label: '请选择'
-        }],
         rankOptions: [{
           value: 0,
           label: '请选择'

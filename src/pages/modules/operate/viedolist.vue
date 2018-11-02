@@ -17,19 +17,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="内容分类">
-        <el-select v-model="channel" placeholder="全部">
-          <el-option v-for="item in checkList"
-                     :key="item.id"
-                     :label="item.name"
-                     :value="item.id">
-          </el-option>
+        <el-select v-model="oneClassify" placeholder="请选择" @change="changeMethods">
+          <el-option v-for="item in classifyList"
+                     :value="item.id" :label="item.name" :key="item.id"></el-option>
         </el-select>
-        <el-select v-model="channel" placeholder="全部">
-          <el-option v-for="item in checkList"
-                     :key="item.id"
-                     :label="item.name"
-                     :value="item.id">
-          </el-option>
+        <el-select v-model="twoClassify" placeholder="请选择" @change="selectGet2">
+          <el-option v-for="item in marterList" :label="item.name" :value="item.id" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="用户ID">
@@ -278,7 +271,11 @@
         }],
         state: '0',
         datestart:'',
-        dateend:''
+        dateend:'',
+        oneClassify: '',
+        twoClassify: '',
+        classifyList:'',
+        marterList:''
       }
     },
     components: {
@@ -336,6 +333,17 @@
           this.dataListLoading = false
         })
 
+        // 分类
+        this.$http({
+          url: this.$http.adornUrl('/mcn/getClassify'),
+          method: 'get',
+          params: this.$http.adornParams({
+            token: this.$cookie.get('token')
+          })
+        }).then(({data}) => {
+          this.classifyList = data.data
+        })
+
         // 频道
         this.$http({
           url: this.$http.adornUrl('/mcn/getType'),
@@ -349,6 +357,25 @@
             this.checkList = data.data
           }
         })
+      },
+      //  二级连动
+      changeMethods(id){
+        this.classifyList.map(e => {
+          if(e.id == id) {
+            this.marterList = e.list
+            if(e.list = []){
+              this.twoClassify = '请选择'
+            }
+          }
+        })
+        this.objs = id//obj.label
+      },
+      selectGet2 (vId) {
+        let obj = {}
+        obj = this.twoOptions.find((item) => {
+          return item.value === vId
+        })
+        this.objs2 = vId//obj.label
       },
       // 每页数
       sizeChangeHandle (val) {
