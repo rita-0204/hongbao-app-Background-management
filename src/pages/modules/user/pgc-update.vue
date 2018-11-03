@@ -153,9 +153,9 @@
           majiaNo: [
             {required: true, message: '请选择马甲号', trigger: 'blur'}
           ],
-          grade: [
-            {required: true, message: '请选择分级', trigger: 'blur'}
-          ],
+//          grade: [
+//            {required: true, message: '请选择分级', trigger: 'blur'}
+//          ],
           email: [
             {required: true, message: '邮箱不能为空', trigger: 'blur'},
             {validator: validateEmail, trigger: 'blur'}
@@ -171,16 +171,16 @@
         this.visible = true
 //        this.$refs['dataForm'].resetFields()
         if (this.dataForm.id) {
+          // 频道
           this.$http({
             url: this.$http.adornUrl('/mcn/getType'),
             method: 'get',
             params: this.$http.adornParams({
-              'type': this.typeName,
-              'token': this.$cookie.get('token')
+              type: this.typeName,
+              token: this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {
-//            console.log(data)
 //              this.dataList = data.data
             } else {
               this.dataList = []
@@ -247,21 +247,22 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/mcn/pgcadd'),
+              url: this.$http.adornUrl('/mcn/uppgc'),
               method: 'post',
               data: this.$http.adornData({
-                'headurl': this.imageUrl,
-                'nickname': this.dataForm.roleName,
-                'mobile': this.dataForm.mobile,
-                'sex': this.dataForm.sex,
-                'type': this.dataForm.majiaNo,
-                'classify': this.dataForm.classify,
-                'rank': this.dataForm.grade,
-                'sign': this.dataForm.sign,
-                'url': this.dataForm.pachongAd,
-                'name': this.dataForm.contant,
-                'mail': this.dataForm.email,
-                'token': this.$cookie.get('token')
+                id:this.dataForm.id,
+                headurl: this.imageUrl,
+                nickname: this.dataForm.roleName,
+                mobile: this.dataForm.mobile,
+                sex: this.dataForm.sex,
+                type: this.dataForm.majiaNo,
+                classify: this.dataForm.classify,
+                rank: this.dataForm.grade,
+                sign: this.dataForm.sign,
+                url: this.dataForm.pachongAd,
+                name: this.dataForm.contant,
+                mail: this.dataForm.email,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
 //              console.log(data,2626)

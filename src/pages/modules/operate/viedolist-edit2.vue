@@ -209,7 +209,17 @@
               this.rank = data.data.grade
               this.dataForm.userName = data.data.pgcid
               this.dataForm.checked = data.data.newsconcern.split(",").map(Number)
-              this.optionImg.img = data.data.cover
+
+              /*
+                 string 字符串;
+                 str 指定字符;
+                 split(),用于把一个字符串分割成字符串数组;
+                 split(str)[0],读取数组中索引为0的值（第一个值）,所有数组索引默认从0开始;
+               */
+              var string = String(data.data.cover)
+              var str = string.split('@')[0]
+              this.optionImg.img = str
+              this.downImg = str
               this.$refs.video.src = data.data.video
             }
           })
@@ -228,10 +238,6 @@
         this.objs = id//obj.label
       },
       selectGet2 (vId) {
-        let obj = {}
-        obj = this.twoOptions.find((item) => {
-          return item.value === vId
-        })
         this.objs2 = vId//obj.label
       },
       //  上传图片
@@ -249,7 +255,7 @@
               headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             })
               .then((response) => {
-                this.coverImg = response.data.data;
+                this.downImg = response.data.data;
               })
           })
         })
@@ -286,7 +292,7 @@
                 grade: this.rank,
                 newsconcern: this.dataForm.checked.toString(),
                 pgcid:this.dataForm.userName,
-                cover:this.coverImg,
+                cover:this.downImg,
                 token: this.$cookie.get('token'),
               })
             }).then(({data}) => {
@@ -299,6 +305,8 @@
                     this.$router.push({
                       path: '/viedoList'
                     })
+
+//                    this.downImg = ''
 //                    this.visible = false;
 //                    this.init(this.dataForm.id);
                   }

@@ -91,7 +91,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="addEditHander(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="updateEditHander(scope.row.id)">编辑</el-button>
               <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
             </template>
           </el-table-column>
@@ -108,11 +108,14 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <add-or-edit-update v-if="addEditVisible" ref="addEdit" @refreshDataList="getDataList"></add-or-edit-update>
+    <update v-if="updateVisible" ref="updateEdit" @refreshDataList="getDataList"></update>
   </div>
 </template>
 
 <script>
   import AddOrEditUpdate from './pgc-add'
+  import Update from './pgc-update'
+
   export default {
     data () {
       return {
@@ -125,13 +128,15 @@
         totalPage: 0,
         dataListLoading: false,
         addEditVisible: false,
+        updateVisible:false,
         dataListSelections: [],
         activeName2: 'first',
         typeName: 0
       }
     },
     components: {
-      AddOrEditUpdate
+      AddOrEditUpdate,
+      Update
     },
     activated () {
       this.getDataList()
@@ -186,7 +191,14 @@
         }
         this.getDataList ()
       },
-      // 新增 编辑
+      // 编辑
+      updateEditHander (id) {
+        this.updateVisible = true
+        this.$nextTick(() => {
+          this.$refs.updateEdit.init(id)
+        })
+      },
+      // 新增
       addEditHander (id) {
         this.addEditVisible = true
         this.$nextTick(() => {
