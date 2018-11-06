@@ -59,18 +59,10 @@
             label="类型">
           </el-table-column>
           <el-table-column
-            prop="classify"
+            prop="typeName"
             header-align="center"
             align="center"
-            :formatter="formatClassify"
-            label="一级分类">
-          </el-table-column>
-          <el-table-column
-            prop="rank"
-            header-align="center"
-            align="center"
-            :formatter="formatRank"
-            label="分级">
+            label="频道">
           </el-table-column>
           <el-table-column
             prop="url"
@@ -158,20 +150,6 @@
           return '马甲';
         }
       },
-      formatClassify: function (row, column, cellValue) {
-        if (cellValue == "1"){
-          return '一级分类';
-        }else if (cellValue == "2"){
-          return '二级分类';
-        }
-      },
-      formatRank: function (row, column, cellValue) {
-        if (cellValue == "1"){
-          return '一级';
-        }else if (cellValue == "2"){
-          return '二级';
-        }
-      },
       formatStatus: function (row, column, cellValue) {
         if (cellValue == "0"){
           return '待审核';
@@ -214,10 +192,10 @@
               url: this.$http.adornUrl('/mcn/getpgclist'),
               method: 'get',
               params: this.$http.adornParams({
-                'nickname': this.dataForm.nickname,
-                'id': this.dataForm.id,
-                'page': this.pageIndex - 1,
-                'token': this.$cookie.get('token')
+                nickname: this.dataForm.nickname,
+                id: this.dataForm.id,
+                page: this.pageIndex - 1,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
 //              console.log(data)
@@ -258,8 +236,8 @@
             url: this.$http.adornUrl('/mcn/delpgc'),
             method: 'get',
             params: this.$http.adornParams({
-              'id': id,
-              'token': this.$cookie.get('token')
+              id: id,
+              token: this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {

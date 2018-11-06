@@ -4,7 +4,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
-             label-width="80px">
+             label-width="100px">
       <el-form-item label="作者头像" prop="headImg" :class="{ 'is-required': !dataForm.id }">
         <el-upload
           class="avatar-uploader"
@@ -37,23 +37,12 @@
           <el-radio v-model="dataForm.majiaNo" :label="0">否</el-radio>
         </div>
       </el-form-item>
-      <el-form-item label="分类" prop="classify" :class="{ 'is-required': !dataForm.id }">
-        <el-select v-model="dataForm.classify" placeholder="选择分类">
-          <el-option v-for="item in classifyOptions"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="分级" prop="grade" :class="{ 'is-required': !dataForm.id }">
-        <el-select v-model="dataForm.grade">
-          <el-option v-for="item in rankOptions"
-                     :key="item.value"
-                     :label="item.label"
-                     :value="item.value">
-          </el-option>
-        </el-select>
+      <el-form-item label="频道" prop="channel" >
+        <template>
+          <el-radio-group v-model="dataForm.checked" style="width:100%;margin-top:10px;">
+            <el-radio v-for="item in checkList" :label="item.id" :key="item.id" style="margin-bottom:10px;">{{item.name}}</el-radio>
+          </el-radio-group>
+        </template>
       </el-form-item>
       <el-form-item label="签名" prop="sign">
         <el-input v-model="dataForm.sign"></el-input>
@@ -98,67 +87,36 @@
         imageUrl: '',
         url: '',
         value: '',
-        classifyOptions: [{
-          value: '1',
-          label: '一级分类'
-        }],
-        rankOptions: [{
-          value: '1',
-          label: '一级'
-        },
-          {
-            value: '2',
-            label: '二级'
-          },
-          {
-            value: '3',
-            label: '三级'
-          },
-          {
-            value: '4',
-            label: '四级'
-          },
-          {
-            value: '5',
-            label: '五级'
-          }],
-        checkList: [],
         visible: false,
         imgUrl: '',
         dataForm: {
           id: 0,
           roleName: '',
-          remark: '',
+          remark: 0,
           mobile: '',
           majiaNo: 1,
           sex: 0,
-          classify: '',
+          classify: 0,
           grade: '',
           sign: '',
           pachongAd: '',
           contant: '',
-          email: ''
+          email: '',
+          checked: ''
         },
+        checkList: [{
+          name: '',
+          id: ''
+        }],
         dataRule: {
           roleName: [
             {required: true, message: '作者名称不能为空', trigger: 'blur'}
-          ],
-          mobile: [
-            {required: true, message: '手机号不能为空', trigger: 'blur'},
-            {validator: validateMobile, trigger: 'blur'}
           ],
           sex: [
             {required: true, message: '请选择性别', trigger: 'blur'}
           ],
           majiaNo: [
             {required: true, message: '请选择马甲号', trigger: 'blur'}
-          ],
-//          grade: [
-//            {required: true, message: '请选择分级', trigger: 'blur'}
-//          ],
-          email: [
-            {required: true, message: '邮箱不能为空', trigger: 'blur'},
-            {validator: validateEmail, trigger: 'blur'}
           ]
         }
       }
@@ -176,22 +134,22 @@
             url: this.$http.adornUrl('/mcn/getType'),
             method: 'get',
             params: this.$http.adornParams({
-              type: this.typeName,
+              type: 1,
               token: this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {
-//              this.dataList = data.data
+              this.checkList = data.data
             } else {
-              this.dataList = []
+              this.checkList = []
             }
           }).then(() => {
             this.$http({
               url: this.$http.adornUrl('/mcn/infopgc'),
               method: 'get',
               params: this.$http.adornParams({
-                'id': this.dataForm.id,
-                'token': this.$cookie.get('token')
+                id: this.dataForm.id,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
               if (data.resultCode == 0) {
@@ -204,22 +162,7 @@
                 this.dataForm.pachongAd = data.data.url
                 this.dataForm.contant = data.data.name
                 this.dataForm.email = data.data.mail
-                if (data.data.classify == 1) {
-                  this.dataForm.classify = '一级分类'
-                } else if (data.data.classify == 2) {
-                  this.dataForm.classify = '二级分类'
-                }
-                if (data.data.rank == 1) {
-                  this.dataForm.grade = '一级'
-                } else if (data.data.rank == 2) {
-                  this.dataForm.grade = '二级'
-                } else if (data.data.rank == 3) {
-                  this.dataForm.grade = '三级'
-                } else if (data.data.rank == 4) {
-                  this.dataForm.grade = '四级'
-                } else if (data.data.rank == 5) {
-                  this.dataForm.grade = '五级'
-                }
+                this.dataForm.checked = data.data.classify
               }
             })
           })
@@ -256,7 +199,7 @@
                 mobile: this.dataForm.mobile,
                 sex: this.dataForm.sex,
                 type: this.dataForm.majiaNo,
-                classify: this.dataForm.classify,
+                classify: this.dataForm.checked,
                 rank: this.dataForm.grade,
                 sign: this.dataForm.sign,
                 url: this.dataForm.pachongAd,

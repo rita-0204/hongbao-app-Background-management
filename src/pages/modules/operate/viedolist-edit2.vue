@@ -10,7 +10,27 @@
         <el-input v-model="dataForm.title"></el-input>
       </el-form-item>
       <el-form-item label="标签" prop="remark">
-        <el-input v-model="dataForm.tag"></el-input>
+        <div style="width:550px;overflow:hidden;">
+          <el-tag
+            :key="tag"
+            v-for="tag in dynamicTags"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)">
+            {{tag}}
+          </el-tag>
+          <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"
+          >
+          </el-input>
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+        </div>
       </el-form-item>
       <el-form-item label="分类" prop="remark">
         <el-select v-model="oneClassify" placeholder="请选择" @change="changeMethods">
@@ -133,6 +153,7 @@
           title: '',
           userName: '',
           checked: [0,1],
+          tag:[]
         },
         dataRule: {
           title: [
@@ -147,7 +168,10 @@
         objs: null,
         objs2: null,
         classifyList:'',
-        marterList:''
+        marterList:'',
+        dynamicTags: ['标签一', '标签二', '标签三'],
+        inputVisible: false,
+        inputValue: ''
       }
     },
     components: {
@@ -199,6 +223,7 @@
             if (data.resultCode == 0) {
               this.dataForm.id = data.data.id
               this.dataForm.title = data.data.title
+              this.dynamicTags = data.data.tags
               this.oneClassify = data.data.classify1
               this.twoClassify = data.data.classify2
               this.classifyList.map(e => {
@@ -286,7 +311,7 @@
               data: this.$http.adornData({
                 id: this.dataForm.id,
                 title:this.dataForm.title,
-                tag:this.dataForm.tag,
+                tag:this.dynamicTags,
                 classify1:this.objs,
                 classify2:this.objs2,
                 grade: this.rank,
@@ -305,10 +330,6 @@
                     this.$router.push({
                       path: '/viedoList'
                     })
-
-//                    this.downImg = ''
-//                    this.visible = false;
-//                    this.init(this.dataForm.id);
                   }
                 })
               } else {
@@ -319,14 +340,29 @@
         })
       },
       goBack(){
-//        this.init(this.$route.query.id);
         this.$router.go(-1)
-//        this.$router.push({
-//          path: '/viedoList'
-//        })
-//        this.visible = false;
+      },
+      // 标签
+      handleClose(tag) {
+        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.dynamicTags.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
       }
-    }
+        }
   }
 </script>
 

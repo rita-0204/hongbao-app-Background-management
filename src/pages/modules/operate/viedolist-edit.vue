@@ -13,7 +13,7 @@
         <el-input v-model="dataForm.title"></el-input>
       </el-form-item>
       <el-form-item label="标签" prop="remark">
-        <el-input v-model="dataForm.tag"></el-input>
+
       </el-form-item>
       <el-form-item label="分类" prop="remark">
         <el-select v-model="oneClassify" placeholder="请选择" @change="changeMethods">
@@ -361,5 +361,20 @@
     position: fixed;
     right:230px;
     /*top:0;*/
+  }
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 </style>

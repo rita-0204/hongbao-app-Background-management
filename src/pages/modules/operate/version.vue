@@ -1,5 +1,10 @@
 <template>
   <div class="mod-role">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item>
+        <el-button type="primary" @click="addEditHander()">新增</el-button>
+      </el-form-item>
+    </el-form>
     <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="用户ID">
         <el-input v-model="dataForm.id" clearable></el-input>
@@ -7,24 +12,22 @@
       <el-form-item label="用户昵称">
         <el-input v-model="dataForm.nickname" clearable></el-input>
       </el-form-item>
-      <el-form-item label="手机号码">
-        <el-input v-model="dataForm.mobile" clearable></el-input>
-      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
-      <el-tab-pane label="普通用户" name="first">
+      <el-tab-pane label="PGC用户" name="first">
         <el-table
           :data="dataList"
           border
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
+            label="用户头像"
             header-align="center"
             align="center"
-            label="用户头像">
+            >
             <template slot-scope="scope">
               <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
             </template>
@@ -42,12 +45,6 @@
             label="用户昵称">
           </el-table-column>
           <el-table-column
-            prop="mobile"
-            header-align="center"
-            align="center"
-            label="手机号码">
-          </el-table-column>
-          <el-table-column
             prop="sex"
             header-align="center"
             align="center"
@@ -55,25 +52,28 @@
             label="性别">
           </el-table-column>
           <el-table-column
-            prop="regdate"
-            header-align="center"
-            align="center"
-            :formatter="formatData"
-            label="注册时间">
-          </el-table-column>
-          <el-table-column
             prop="type"
             header-align="center"
             align="center"
-            :formatter="formatTpye"
+            :formatter="formatType"
             label="类型">
+          </el-table-column>
+          <el-table-column
+            prop="typeName"
+            header-align="center"
+            align="center"
+            label="频道">
+          </el-table-column>
+          <el-table-column
+            prop="url"
+            header-align="center"
+            align="center"
+            label="爬虫链接">
           </el-table-column>
           <el-table-column
             prop="status"
             header-align="center"
             align="center"
-            class-name="colorRow"
-            label-class-name="colorLabel"
             :formatter="formatStatus"
             label="状态">
           </el-table-column>
@@ -83,13 +83,8 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="detailHandle(scope.row.id)">详情</el-button>
-              <el-button type="text" class="btns" size="small"
-                         @click="stateHandle(scope.row.id,scope.row.status)"
-                         v-if="scope.row.status == 1 ">解封用户</el-button>
-              <el-button type="text" class="btns" size="small"
-                         @click="stateHandle(scope.row.id,scope.row.status)"
-                         v-if="scope.row.status == 0 ">封禁用户</el-button>
+              <el-button type="text" size="small" @click="updateEditHander(scope.row.id)">编辑</el-button>
+              <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -104,13 +99,15 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <detail-update v-if="detailVisible" ref="detail" @refreshDataList="getDataList"></detail-update>
+    <add-or-edit-update v-if="addEditVisible" ref="addEdit" @refreshDataList="getDataList"></add-or-edit-update>
+    <update v-if="updateVisible" ref="updateEdit" @refreshDataList="getDataList"></update>
   </div>
 </template>
 
 <script>
-  import detailUpdate from './normal-detail.vue'
-  import moment from 'moment'
+  import AddOrEditUpdate from './version-add'
+  import Update from './version-update'
+
   export default {
     data () {
       return {
@@ -121,23 +118,22 @@
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
-        detailVisible: false,
         dataListLoading: false,
+        addEditVisible: false,
+        updateVisible:false,
         dataListSelections: [],
         activeName2: 'first',
         typeName: 0
       }
     },
     components: {
-      detailUpdate
+      AddOrEditUpdate,
+      Update
     },
     activated () {
       this.getDataList()
     },
     methods: {
-      formatData(data){
-        return moment(data.createtime).format('YYYY-MM-DD HH:mm:ss')
-      },
       formatSex: function (row, column, cellValue) {
         if (cellValue == "1"){
           return '男';
@@ -147,18 +143,22 @@
           return '未知';
         }
       },
-      formatStatus: function (row, column, cellValue) {
-        if (cellValue == "0"){
+      formatType: function (row, column, cellValue) {
+        if (cellValue == "1"){
           return '正常';
-        }else if (cellValue == "1"){
-          return '禁封';
+        }else if (cellValue == "0"){
+          return '马甲';
         }
       },
-      formatTpye: function (row, column, cellValue) {
+      formatStatus: function (row, column, cellValue) {
         if (cellValue == "0"){
-          return '普通用户';
+          return '待审核';
         }else if (cellValue == "1"){
-          return '马甲用户';
+          return '审核中';
+        }else if (cellValue == "2"){
+          return '审核通过';
+        }else if (cellValue == "3"){
+          return '审核不通过';
         }
       },
       handleClick(tab, event) {
@@ -169,34 +169,46 @@
         }
         this.getDataList ()
       },
-      // 新增 编辑
-      detailHandle (id) {
-        this.detailVisible = true
+      // 编辑
+      updateEditHander (id) {
+        this.updateVisible = true
         this.$nextTick(() => {
-          this.$refs.detail.init(id)
+          this.$refs.updateEdit.init(id)
+        })
+      },
+      // 新增
+      addEditHander (id) {
+        this.addEditVisible = true
+        this.$nextTick(() => {
+          this.$refs.addEdit.init(id)
         })
       },
       // 获取数据列表
-      getDataList () {
+      getDataList (index) {
         this.dataListLoading = true
-        this.$http({
-          url: this.$http.adornUrl('/mcn/getlistuser'),
-          method: 'get',
-          params: this.$http.adornParams({
-            id:this.dataForm.id,
-            mobile:this.dataForm.mobile,
-            nikename: this.dataForm.nickname,
-            token: this.$cookie.get('token')
-          })
-        }).then(({data}) => {
-          if (data.resultCode == 0) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.total
-          } else {
-            this.dataList = []
-            this.totalPage = 0
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            this.$http({
+              url: this.$http.adornUrl('/mcn/getpgclist'),
+              method: 'get',
+              params: this.$http.adornParams({
+                nickname: this.dataForm.nickname,
+                id: this.dataForm.id,
+                page: this.pageIndex - 1,
+                token: this.$cookie.get('token')
+              })
+            }).then(({data}) => {
+//              console.log(data)
+              if (data.resultCode == 0) {
+                this.dataList = data.data.list
+                this.totalPage = data.data.total
+              } else {
+                this.dataList = []
+                this.totalPage = 0
+              }
+              this.dataListLoading = false
+            })
           }
-          this.dataListLoading = false
         })
       },
       // 每页数
@@ -210,27 +222,21 @@
         this.pageIndex = val
         this.getDataList()
       },
-      //
-      stateHandle (id,status) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.roleId
+      // 删除
+      deleteHandle (id,index) {
+        var userIds = id ? [id] : this.dataListSelections.map(item => {
+          return item.userId
         })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行${status == 1 ? '解封' : '封禁'}操作?`, '提示', {
+        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          if(status == 0){
-            status = 1
-          }else {
-            status = 0
-          }
           this.$http({
-            url: this.$http.adornUrl('/mcn/fengjinuser'),
-            method: 'post',
-            data: this.$http.adornData({
+            url: this.$http.adornUrl('/mcn/delpgc'),
+            method: 'get',
+            params: this.$http.adornParams({
               id: id,
-              status: status,
               token: this.$cookie.get('token')
             })
           }).then(({data}) => {
@@ -247,7 +253,7 @@
               this.$message.error(data.msg)
             }
           })
-        })
+        }).catch(() => {})
       }
     }
   }
@@ -256,38 +262,11 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" type="stylesheet/scss" scoped>
   .mod-role{
-  .tabs-icon{
-    position: static;
-  }
+    .tabs-icon{
+      position: static;
+    }
   }
   .btns{
     margin-left:0;
-  }
-  .main-title-top{
-    width: 100%;
-    height: 50px;
-  label {
-    width: 210px;
-    margin-bottom: 10px;
-    float: left;
-  span {
-    margin-right: 10px;
-  }
-  input {
-    display: inline-block;
-    width: 80px;
-    height: 20px;
-    border: 1px solid #dcdcdc;
-  }
-  }
-  .btnCheck{
-    float: left;
-    background: #409EFF;
-    color: #fff;
-    padding: 6px 15px;
-    border-radius: 100px;
-    cursor: pointer;
-    margin-top: -5px;
-  }
   }
 </style>
