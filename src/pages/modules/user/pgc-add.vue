@@ -40,7 +40,7 @@
       <el-form-item label="频道" prop="channel" >
         <template>
           <el-radio-group v-model="dataForm.checked" style="width:100%;margin-top:10px;">
-            <el-radio v-for="item in checkList" :label="item.id" :key="item.id">{{item.name}}</el-radio>
+            <el-radio v-for="item in checkList" :label="item.id" :key="item.id" style="margin-bottom:10px;">{{item.name}}</el-radio>
           </el-radio-group>
         </template>
       </el-form-item>
@@ -69,20 +69,6 @@
 
   export default {
     data() {
-      var validateEmail = (rule, value, callback) => {
-        if (!isEmail(value)) {
-          callback(new Error('邮箱格式错误'))
-        } else {
-          callback()
-        }
-      }
-      var validateMobile = (rule, value, callback) => {
-        if (!isMobile(value)) {
-          callback(new Error('手机号格式错误'))
-        } else {
-          callback()
-        }
-      }
       return {
         imageUrl: '',
         url: '',
@@ -112,22 +98,11 @@
           roleName: [
             {required: true, message: '作者名称不能为空', trigger: 'blur'}
           ],
-          mobile: [
-            {required: true, message: '手机号不能为空', trigger: 'blur'},
-            {validator: validateMobile, trigger: 'blur'}
-          ],
           sex: [
             {required: true, message: '请选择性别', trigger: 'blur'}
           ],
           majiaNo: [
             {required: true, message: '请选择马甲号', trigger: 'blur'}
-          ],
-          grade: [
-            {required: true, message: '请选择分级', trigger: 'blur'}
-          ],
-          email: [
-            {required: true, message: '邮箱不能为空', trigger: 'blur'},
-            {validator: validateEmail, trigger: 'blur'}
           ]
         }
       }
@@ -138,8 +113,6 @@
         this.urlShow = this.$http.adornUrl(`/controll/picshow?token=${this.$cookie.get('token')}`)
         this.dataForm.id = id || 0
         this.visible = true
-//        this.$refs['dataForm'].resetFields()
-        if (this.dataForm.id) {
           // 频道
           this.$http({
             url: this.$http.adornUrl('/mcn/getType'),
@@ -154,31 +127,7 @@
             } else {
               this.checkList = []
             }
-          }).then(() => {
-
-            this.$http({
-              url: this.$http.adornUrl('/mcn/infopgc'),
-              method: 'get',
-              params: this.$http.adornParams({
-                id: this.dataForm.id,
-                token: this.$cookie.get('token')
-              })
-            }).then(({data}) => {
-              if (data.resultCode == 0) {
-                this.imageUrl = data.data.headurl
-                this.dataForm.roleName = data.data.nickname
-                this.dataForm.mobile = data.data.mobile
-                this.dataForm.sex = data.data.sex
-                this.dataForm.majiaNo = data.data.type
-                this.dataForm.sign = data.data.sign
-                this.dataForm.pachongAd = data.data.url
-                this.dataForm.contant = data.data.name
-                this.dataForm.email = data.data.mail
-                this.dataForm.checked = data.data.classify
-              }
-            })
           })
-        }
       },
       // 上传之前
       beforeUploadHandle(file) {
@@ -205,18 +154,19 @@
               url: this.$http.adornUrl('/mcn/pgcadd'),
               method: 'post',
               data: this.$http.adornData({
-                'headurl': this.imageUrl,
-                'nickname': this.dataForm.roleName,
-                'mobile': this.dataForm.mobile,
-                'sex': this.dataForm.sex,
-                'type': this.dataForm.majiaNo,
-                'classify': this.dataForm.classify,
-                'rank': this.dataForm.grade,
-                'sign': this.dataForm.sign,
-                'url': this.dataForm.pachongAd,
-                'name': this.dataForm.contant,
-                'mail': this.dataForm.email,
-                'token': this.$cookie.get('token')
+                id:this.dataForm.id,
+                headurl: this.imageUrl,
+                nickname: this.dataForm.roleName,
+                mobile: this.dataForm.mobile,
+                sex: this.dataForm.sex,
+                type: this.dataForm.majiaNo,
+                classify: this.dataForm.checked,
+                rank: this.dataForm.grade,
+                sign: this.dataForm.sign,
+                url: this.dataForm.pachongAd,
+                name: this.dataForm.contant,
+                mail: this.dataForm.email,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
 //              console.log(data,2626)

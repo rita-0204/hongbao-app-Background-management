@@ -6,76 +6,47 @@
       </el-form-item>
     </el-form>
     <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item label="用户ID">
-        <el-input v-model="dataForm.id" clearable></el-input>
+      <el-form-item label="版本">
+        <el-input v-model="dataForm.edition" clearable></el-input>
       </el-form-item>
-      <el-form-item label="用户昵称">
-        <el-input v-model="dataForm.nickname" clearable></el-input>
+      <el-form-item label="渠道">
+        <el-input v-model="dataForm.channel" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
       </el-form-item>
     </el-form>
-    <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
-      <el-tab-pane label="PGC用户" name="first">
+    <el-tabs v-model="activeName2" type="card" class="tabs-icon">
+      <el-tab-pane label="版本管理" name="first">
         <el-table
           :data="dataList"
           border
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
-            label="用户头像"
+            prop="edition"
             header-align="center"
             align="center"
-            >
-            <template slot-scope="scope">
-              <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
-            </template>
+            label="版本">
           </el-table-column>
           <el-table-column
-            prop="id"
+            prop="channel"
             header-align="center"
             align="center"
-            label="用户ID">
+            label="渠道">
           </el-table-column>
           <el-table-column
-            prop="nickname"
+            prop="uploading"
             header-align="center"
             align="center"
-            label="用户昵称">
+            label="文件">
           </el-table-column>
           <el-table-column
-            prop="sex"
+            prop="createTime"
             header-align="center"
             align="center"
-            :formatter="formatSex"
-            label="性别">
-          </el-table-column>
-          <el-table-column
-            prop="type"
-            header-align="center"
-            align="center"
-            :formatter="formatType"
-            label="类型">
-          </el-table-column>
-          <el-table-column
-            prop="typeName"
-            header-align="center"
-            align="center"
-            label="频道">
-          </el-table-column>
-          <el-table-column
-            prop="url"
-            header-align="center"
-            align="center"
-            label="爬虫链接">
-          </el-table-column>
-          <el-table-column
-            prop="status"
-            header-align="center"
-            align="center"
-            :formatter="formatStatus"
-            label="状态">
+            :formatter="formatData"
+            label="更新时间">
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -83,7 +54,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="updateEditHander(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="updateEditHander(scope.row)">编辑</el-button>
               <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
             </template>
           </el-table-column>
@@ -107,12 +78,13 @@
 <script>
   import AddOrEditUpdate from './version-add'
   import Update from './version-update'
-
+  import moment from 'moment'
   export default {
     data () {
       return {
         dataForm: {
-          roleName: ''
+          edition: '',
+          channel:''
         },
         dataList: [],
         pageIndex: 1,
@@ -134,40 +106,8 @@
       this.getDataList()
     },
     methods: {
-      formatSex: function (row, column, cellValue) {
-        if (cellValue == "1"){
-          return '男';
-        }else if (cellValue == "2"){
-          return '女';
-        } else if (cellValue == "0"){
-          return '未知';
-        }
-      },
-      formatType: function (row, column, cellValue) {
-        if (cellValue == "1"){
-          return '正常';
-        }else if (cellValue == "0"){
-          return '马甲';
-        }
-      },
-      formatStatus: function (row, column, cellValue) {
-        if (cellValue == "0"){
-          return '待审核';
-        }else if (cellValue == "1"){
-          return '审核中';
-        }else if (cellValue == "2"){
-          return '审核通过';
-        }else if (cellValue == "3"){
-          return '审核不通过';
-        }
-      },
-      handleClick(tab, event) {
-        if(tab.name == 'first'){
-          this.typeName = 0;
-        }else if(tab.name == 'second'){
-          this.typeName = 1
-        }
-        this.getDataList ()
+      formatData(data){
+        return moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
       },
       // 编辑
       updateEditHander (id) {
@@ -189,11 +129,11 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/mcn/getpgclist'),
-              method: 'get',
-              params: this.$http.adornParams({
-                nickname: this.dataForm.nickname,
-                id: this.dataForm.id,
+              url: this.$http.adornUrl('/mcn/get/app/list'),
+              method: 'post',
+              data: this.$http.adornData({
+                edition:this.dataForm.edition,
+                channel:this.dataForm.channel,
                 page: this.pageIndex - 1,
                 token: this.$cookie.get('token')
               })
@@ -233,10 +173,11 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/mcn/delpgc'),
-            method: 'get',
-            params: this.$http.adornParams({
+            url: this.$http.adornUrl('/mcn/up/app/channel'),
+            method: 'post',
+            data: this.$http.adornData({
               id: id,
+              status: 1,
               token: this.$cookie.get('token')
             })
           }).then(({data}) => {

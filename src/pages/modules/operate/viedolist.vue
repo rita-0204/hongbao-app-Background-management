@@ -1,6 +1,6 @@
 <template>
-  <div class="mod-role checkViedo">
-    <el-form :inline="true">
+  <div class="mod-role">
+    <el-form :inline="true" class="checkViedo">
       <el-form-item label="视频ID">
         <el-input v-model="videoId" clearable></el-input>
       </el-form-item>

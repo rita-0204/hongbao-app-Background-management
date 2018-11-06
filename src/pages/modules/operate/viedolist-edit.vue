@@ -340,7 +340,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" type="stylesheet/scss" scoped>
   .el-dialog{
     width:72%;
   }

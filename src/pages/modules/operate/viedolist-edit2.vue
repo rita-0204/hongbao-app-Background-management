@@ -1,7 +1,7 @@
 <template>
   <div style="padding:50px 0;" v-show="visible">
     <video ref="video" controls preload="auto"></video>
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
              label-width="80px" class="formWidth">
       <el-form-item label="视频ID" prop="remark">
         <el-input v-model="dataForm.id" :disabled="true"></el-input>
@@ -16,7 +16,7 @@
             v-for="tag in dynamicTags"
             closable
             :disable-transitions="false"
-            @close="handleClose(tag)">
+            @close="handleClose(tag)" style="margin-bottom:10px;">
             {{tag}}
           </el-tag>
           <el-input
@@ -29,7 +29,7 @@
             @blur="handleInputConfirm"
           >
           </el-input>
-          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
         </div>
       </el-form-item>
       <el-form-item label="分类" prop="remark">
@@ -85,7 +85,7 @@
     </el-form>
     <span slot="footer" class="dialog-footer" style="margin: 0 auto;display:block;text-align: center">
       <el-button @click="goBack()">返回</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">保存</el-button>
+      <el-button type="primary" @click="Submit()" native-type="button">保存</el-button>
     </span>
   </div>
 </template>
@@ -169,7 +169,7 @@
         objs2: null,
         classifyList:'',
         marterList:'',
-        dynamicTags: ['标签一', '标签二', '标签三'],
+        dynamicTags: [],
         inputVisible: false,
         inputValue: ''
       }
@@ -223,7 +223,15 @@
             if (data.resultCode == 0) {
               this.dataForm.id = data.data.id
               this.dataForm.title = data.data.title
-              this.dynamicTags = data.data.tags
+              // 数组去重
+              var str = data.data.tags.filter(function(element,index,self){
+                return self.indexOf(element) === index;
+              });
+
+              this.dynamicTags = str
+              if(str[0] == ''){
+                this.dynamicTags = []
+              }
               this.oneClassify = data.data.classify1
               this.twoClassify = data.data.classify2
               this.classifyList.map(e => {
@@ -302,7 +310,7 @@
         }
       },
       // 表单提交
-      dataFormSubmit() {
+      Submit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -311,7 +319,7 @@
               data: this.$http.adornData({
                 id: this.dataForm.id,
                 title:this.dataForm.title,
-                tag:this.dynamicTags,
+                tag:this.dynamicTags.toString(),
                 classify1:this.objs,
                 classify2:this.objs2,
                 grade: this.rank,
@@ -366,7 +374,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" type="stylesheet/scss" scoped>
   .el-dialog{
     width:72%;
   }
@@ -382,10 +390,25 @@
     height:90px;
   }
   video{
-    width:400px;
-    height:300px;
+    width:300px;
+    height:200px;
     position: fixed;
-    right:180px;
+    right:230px;
     /*top:0;*/
+  }
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 </style>
