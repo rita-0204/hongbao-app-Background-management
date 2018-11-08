@@ -171,7 +171,7 @@ body{
   line-height:30px;
 }
 .checkViedo .el-form-item__label,.checkViedo .el-input__icon{
-  line-height:30px;
+  //line-height:30px;
 }
 .checkViedo .el-button{
   line-height:6px;
@@ -202,7 +202,7 @@ body{
   padding-left: 40px;
 }
 .colorRow{
-  color: red;
+  color: #fc2a41;
 }
 .checkType .el-input__inner{
   width:85px;
@@ -223,4 +223,22 @@ body{
 }
 .viedo-uploader .el-upload i{
   display:none;
+}
+.checkViedo .el-date-editor i,.checkViedo .el-date-editor .el-range-separator{
+  line-height:26px;
+}
+.el-input__inner{
+  height:30px;
+  line-height:30px;
+}
+.el-form-item__label,.checkBtns{
+  height:30px;
+  line-height:30px;
+}
+.checkBtns{
+  height:30px;
+  line-height:6px;
+}
+.checkDatas i.el-range__icon{
+  line-height:30px;
 }

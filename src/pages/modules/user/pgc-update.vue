@@ -40,7 +40,7 @@
       <el-form-item label="频道" prop="channel" >
         <template>
           <el-radio-group v-model="dataForm.checked" style="width:100%;margin-top:10px;">
-            <el-radio v-for="item in checkList" :label="item.id" :key="item.id" style="margin-bottom:10px;">{{item.name}}</el-radio>
+            <el-radio v-for="item in checkList" :label="item.id" :key="item.id" style="margin-bottom:10px;margin-right:30px;margin-left:0;">{{item.name}}</el-radio>
           </el-radio-group>
         </template>
       </el-form-item>
@@ -58,8 +58,8 @@
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">返回</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">保存</el-button>
+      <el-button @click="visible = false" style="height:30px;line-height: 3px;">返回</el-button>
+      <el-button type="primary" @click="dataFormSubmit()" style="height:30px;line-height: 3px;">保存</el-button>
     </span>
   </el-dialog>
 </template>

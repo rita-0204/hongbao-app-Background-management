@@ -26,8 +26,8 @@
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">返回</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">保存</el-button>
+      <el-button @click="visible = false" style="height:30px;line-height: 3px;">返回</el-button>
+      <el-button type="primary" @click="dataFormSubmit()" style="height:30px;line-height: 3px;">保存</el-button>
     </span>
   </el-dialog>
 </template>

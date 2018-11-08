@@ -1,30 +1,19 @@
 <template>
   <div class="mod-role">
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
-        <el-tab-pane label="当前汇率" name="first">
-          <el-table
-            :data="rate"
-            border
-            v-loading="dataListLoading"
-            style="width: 100%;">
-            <el-table-column
-              prop="gold_rmb"
-              header-align="center"
-              align="center"
-              label-class-name="colorLabel"
-              label="汇率">
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              header-align="center"
-              align="center"
-              label-class-name="colorLabel"
-              label="操作">
-              <template slot-scope="scope">
-                <el-button type="text" size="small" @click="UpdateHandle(scope.row.gold_rmb)">修改</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+        <el-tab-pane label="今日汇率" name="first">
+          <el-row :gutter="20" class="top">
+            <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px"
+            style="width:500px;">
+              <el-form-item label="日期">
+                <p style="height:40px;line-height: 40px;">{{data}}</p>
+              </el-form-item>
+              <el-form-item label="汇率" prop="goldNum">
+                <el-input v-model="dataForm.goldNum" placeholder="金币数量"></el-input>
+              </el-form-item>
+              <el-button type="primary" @click="Submit()" style="margin-left:220px;height:30px;line-height: 3px;">保存</el-button>
+            </el-form>
+          </el-row>
         </el-tab-pane>
         <el-tab-pane label="历史记录" name="second">
           <el-table
@@ -33,18 +22,12 @@
             v-loading="dataListLoading"
             style="width: 100%;">
             <el-table-column
-              prop="id"
+              prop="creatDate"
               header-align="center"
               align="center"
+              :formatter="formatData"
               label-class-name="colorLabel"
-              label="id">
-            </el-table-column>
-            <el-table-column
-              prop="goldDate"
-              header-align="center"
-              align="center"
-              label-class-name="colorLabel"
-              label="支出金币">
+              label="日期">
             </el-table-column>
             <el-table-column
               prop="rmbDate"
@@ -54,22 +37,20 @@
               label="汇率">
             </el-table-column>
             <el-table-column
+              prop="goldDate"
+              header-align="center"
+              align="center"
+              label-class-name="colorLabel"
+              label="支出金币">
+            </el-table-column>
+            <el-table-column
               prop="goldRmb"
               header-align="center"
               align="center"
               label-class-name="colorLabel"
-              label="支出金额">
-            </el-table-column>
-            <el-table-column
-              prop="creatDate"
-              header-align="center"
-              align="center"
-              :formatter="formatData"
-              label-class-name="colorLabel"
-              label="创建时间">
+              label="支出现金">
             </el-table-column>
           </el-table>
-
           <el-pagination
             @size-change="sizeChangeHandle"
             @current-change="currentChangeHandle"
@@ -93,7 +74,12 @@
     data () {
       return {
         dataForm: {
-          roleName: ''
+          goldNum: 0
+        },
+        dataRule: {
+          goldNum: [
+            { required: true, message: '金币数量不能为空', trigger: 'blur' }
+          ]
         },
         dataList: [],
         rate:[],
@@ -104,7 +90,8 @@
         typeName: 0,
         pageIndex: 1,
         pageSize: 10,
-        totalPage: 0
+        totalPage: 0,
+        data: moment(new Date()).format('YYYY-MM-DD')
       }
     },
     components: {
@@ -156,10 +143,7 @@
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
-//            console.log(data)
-            this.rate = data.data
-          } else {
-            this.rate = []
+            this.dataForm.goldNum = data.data[0].gold_rmb
           }
           this.dataListLoading = false
         })
@@ -181,6 +165,30 @@
       currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
+      },
+      Submit(){
+        this.$http({
+          url: this.$http.adornUrl('/mcn/up/goldrmb'),
+          method: 'post',
+          data: this.$http.adornData({
+            gold_rmb: this.dataForm.goldNum,
+            token: this.$cookie.get('token')
+          })
+        }).then(({data}) => {
+          if (data.resultCode == 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.visible = false
+                this.$emit('refreshDataList')
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
       }
     }
   }

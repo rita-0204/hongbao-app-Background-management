@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addHandle(typeName)">新增</el-button>
+        <el-button type="primary" @click="addHandle(typeName)" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -17,7 +17,6 @@
               header-align="center"
               align="center"
               label-class-name="colorLabel"
-              width="200"
               label="序号">
             </el-table-column>
             <el-table-column
@@ -33,7 +32,6 @@
               header-align="center"
               align="center"
               label-class-name="colorLabel"
-              width="150"
               label="状态"
               class-name="colorRow"
               :formatter="formatSex">
@@ -43,7 +41,6 @@
               header-align="center"
               align="center"
               label-class-name="colorLabel"
-              width="250"
               label="操作">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,scope.row.name,scope.row.sort,0)">修改</el-button>
@@ -69,7 +66,6 @@
               prop="sort"
               header-align="center"
               align="center"
-              width="200"
               label-class-name="colorLabel"
               label="序号">
             </el-table-column>
@@ -85,7 +81,6 @@
               prop="status"
               header-align="center"
               align="center"
-              width="150"
               class-name="colorRow"
               label-class-name="colorLabel"
               label="状态"
@@ -95,7 +90,6 @@
               fixed="right"
               header-align="center"
               align="center"
-              width="250"
               label-class-name="colorLabel"
               label="操作">
               <template slot-scope="scope">

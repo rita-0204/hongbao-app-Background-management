@@ -13,7 +13,7 @@
               <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()" style="height:30px;line-height: 3px;">登录</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -64,18 +64,17 @@
               url: this.$http.adornUrl('/controll/login'),
               method: 'post',
               data: this.$http.adornData({
-                'username': this.dataForm.userName,
-                'password': this.dataForm.password
+                username: this.dataForm.userName,
+                password: this.dataForm.password
               })
             }).then(({data}) => {
-              console.log(data)
 //              console.log(JSON.parse(data))
               if (data.resultCode == 0) {
                 this.userName = data.data.username
                 this.$cookie.set('token', data.data.token)
                 this.$router.replace({ name: 'home' })
               } else {
-                this.$message.error(data.msg)
+                this.$message.error('账号或密码错误，请重新输入')
               }
             }).catch(({err}) => {
               console.log(err)

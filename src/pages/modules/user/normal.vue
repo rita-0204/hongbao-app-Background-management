@@ -10,8 +10,32 @@
       <el-form-item label="手机号码">
         <el-input v-model="dataForm.mobile" clearable></el-input>
       </el-form-item>
+      <el-form-item label="注册时间">
+        <el-date-picker
+          v-model="dataForm.regdata"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['00:00:00', '23:59:59']"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          class="checkDatas">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="最后登录">
+        <el-date-picker
+          v-model="dataForm.enddata"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['00:00:00', '23:59:59']"
+          value-format="yyyy-MM-dd HH:mm:ss"
+        class="checkDatas">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()" class="checkBtns" style="line-height: 3px;">查询</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -62,6 +86,13 @@
             label="注册时间">
           </el-table-column>
           <el-table-column
+            prop="lastlogintime"
+            header-align="center"
+            align="center"
+            :formatter="formatDataend"
+            label="最后登录">
+          </el-table-column>
+          <el-table-column
             prop="type"
             header-align="center"
             align="center"
@@ -83,7 +114,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="detailHandle(scope.row.id)">详情</el-button>
+              <el-button type="text" size="small" @click="detailHandle(scope.row.id)" style="margin-right:10px;">详情</el-button>
               <el-button type="text" class="btns" size="small"
                          @click="stateHandle(scope.row.id,scope.row.status)"
                          v-if="scope.row.status == 1 ">解封用户</el-button>
@@ -136,7 +167,10 @@
     },
     methods: {
       formatData(data){
-        return moment(data.createtime).format('YYYY-MM-DD HH:mm:ss')
+        return moment(data.regdate).format('YYYY-MM-DD HH:mm:ss')
+      },
+      formatDataend(data){
+        return moment(data.lastlogintime).format('YYYY-MM-DD HH:mm:ss')
       },
       formatSex: function (row, column, cellValue) {
         if (cellValue == "1"){
@@ -186,6 +220,10 @@
             id:this.dataForm.id,
             mobile:this.dataForm.mobile,
             nikename: this.dataForm.nickname,
+            regdate1:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[0], //new Date(this.dataForm.regdata).getTime(),
+            regdate2:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[1],
+            lastlogintime1: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[0],
+            lastlogintime2: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[1],
             token: this.$cookie.get('token')
           })
         }).then(({data}) => {

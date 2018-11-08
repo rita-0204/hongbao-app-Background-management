@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addEditHander()">新增</el-button>
+        <el-button type="primary" @click="addEditHander()" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
     <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
@@ -13,7 +13,7 @@
         <el-input v-model="dataForm.nickname" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()" class="checkBtns" style="line-height: 3px;">查询</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -83,7 +83,7 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="updateEditHander(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="updateEditHander(scope.row.id)" style="margin-right:10px;">编辑</el-button>
               <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
             </template>
           </el-table-column>
@@ -145,7 +145,7 @@
       },
       formatType: function (row, column, cellValue) {
         if (cellValue == "1"){
-          return '正常';
+          return 'PGC';
         }else if (cellValue == "0"){
           return '马甲';
         }

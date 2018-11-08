@@ -8,7 +8,7 @@
         <el-input v-model="dataForm.nickname" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()" class="checkBtns" style="line-height: 3px;">查询</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -32,6 +32,7 @@
             prop="userid"
             header-align="center"
             align="center"
+            width="150"
             label-class-name="colorLabel"
             label="用户ID">
           </el-table-column>
@@ -77,7 +78,7 @@
             fixed="right"
             header-align="center"
             align="center"
-            width="100"
+            width="130"
             label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">

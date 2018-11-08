@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addEditHander()">新增</el-button>
+        <el-button type="primary" @click="addEditHander()" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
     <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
@@ -13,7 +13,7 @@
         <el-input v-model="dataForm.channel" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()" class="checkBtns" style="line-height: 3px;">查询</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon">
