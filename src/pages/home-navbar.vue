@@ -1,7 +1,7 @@
 <template>
   <nav class="site-navbar">
     <div class="site-navbar-header">
-      <h1>主页</h1>
+      <h1>管理后台</h1>
     </div>
     <div class="site-navbar-content">
       <el-menu class="site-navbar__menu fr" mode="horizontal">
@@ -11,7 +11,7 @@
                 {{ userName }}
               </span>
             <el-dropdown-menu slot="dropdown">
-              <!--<el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>-->
+              <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
               <el-dropdown-item @click.native="logoutHandle()">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -41,6 +41,10 @@
           get(){
             return this.$store.state.user.name
           }
+        },
+        mainTabs: {
+          get () { return this.$store.state.common.mainTabs },
+          set (val) { this.$store.commit('common/updateMainTabs', val) }
         }
       },
       methods: {
@@ -62,10 +66,11 @@
                 url: this.$http.adornUrl('/controll/quit'),
                 method: 'get',
                 params: this.$http.adornParams({
-                  'token': this.$cookie.get('token')
+                  token: this.$cookie.get('token')
                 })
               }).then(({data}) => {
                 if (data.resultCode == 0) {
+                  this.mainTabs = []
                   clearLoginInfo()  //清除登录信息及token
                   this.$router.push({ name: 'login' })  //重新跳转到登录页
                 }

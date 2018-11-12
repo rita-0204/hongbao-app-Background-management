@@ -29,13 +29,13 @@
           HomeContent
       },
       computed:{
-        //得到管理员ID
-          userId:{
+        //得到管理员type
+          userType:{
             get(){
-              return this.$stroe.state.user.id  // 接收store 储存数据
+              return this.$store.state.user.type  // 接收store 储存数据
             },
             set(val){
-              this.$store.commit('user/updateId',val)
+              this.$store.commit('user/updateType',val)
             }
           },
         //得到管理员name
@@ -63,6 +63,7 @@
           }).then(({data}) => {
             if (data.resultCode == 0) {
                 this.userName = data.data.truename
+                this.userType = data.data.type
 //              this.$router.push({ name: 'login' })  //重新跳转到登录页
             }
           })

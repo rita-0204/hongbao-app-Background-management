@@ -60,6 +60,7 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            console.log(valid)
             this.$http({
               url: this.$http.adornUrl('/controll/login'),
               method: 'post',
@@ -76,8 +77,6 @@
               } else {
                 this.$message.error('账号或密码错误，请重新输入')
               }
-            }).catch(({err}) => {
-              console.log(err)
             })
           }
         })

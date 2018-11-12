@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import router from '@/router'
-// import store from '@/store'
+import store from '@/store'
 
 /**
  * 获取uuid
@@ -53,6 +53,7 @@ export function treeDataTranslate (data, id = 'id', pid = 'pid') {
  */
 export function clearLoginInfo () {
   Vue.cookie.delete('token')
+  window.localStorage.removeItem('benbenState');
   // store.commit('resetStore')
   router.options.isAddDynamicMenuRoutes = false
 }

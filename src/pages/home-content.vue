@@ -1,5 +1,5 @@
 <template>
-  <main class="site-content new-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
+  <main class="site-content new-content" :class="{ 'site-content--tabs': $route.meta.isTab }" style="background:#fff;">
     <!-- 主入口标签页 s -->
     <el-tabs
       v-if="$route.meta.isTab"
@@ -34,7 +34,7 @@
       </el-tab-pane>
     </el-tabs>
     <!-- 主入口标签页 e -->
-    <el-card v-else :body-style="siteContentViewHeight">
+    <el-card v-else :body-style="siteContentViewHeight" style="box-shadow: none;border:none;background:url('../../static/img/back.jpg') no-repeat center center;width:100%;height:100vh;">
       <keep-alive>
         <router-view />
       </keep-alive>

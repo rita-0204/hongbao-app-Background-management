@@ -113,6 +113,11 @@
         this.urlShow = this.$http.adornUrl(`/controll/picshow?token=${this.$cookie.get('token')}`)
         this.dataForm.id = id || 0
         this.visible = true
+        this.$nextTick(() => {
+          this.imageUrl = ''
+          this.dataForm.checked = []
+          this.$refs['dataForm'].resetFields()
+        })
           // 频道
           this.$http({
             url: this.$http.adornUrl('/mcn/getType'),

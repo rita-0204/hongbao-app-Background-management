@@ -2,7 +2,7 @@
   <div class="mod-menu">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addHandle(typeName)">新增</el-button>
+        <el-button type="primary" @click="addHandle(typeName)" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon">
@@ -98,7 +98,7 @@
           url: this.$http.adornUrl('/mcn/getClassify'),
           method: 'get',
           params: this.$http.adornParams({
-            'token': this.$cookie.get('token')
+            token: this.$cookie.get('token')
           })
         }).then(({data}) => {
           this.dataList = treeDataTranslate(data.data, 'id')
@@ -130,9 +130,9 @@
             url: this.$http.adornUrl(`/mcn/updateClassify`),
             method: 'post',
             data: this.$http.adornData({
-              'id': id,
-              'status': 1,
-              'token': this.$cookie.get('token')
+              id: id,
+              status: 1,
+              token: this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {

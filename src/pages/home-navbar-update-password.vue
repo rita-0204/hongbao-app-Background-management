@@ -4,7 +4,7 @@
       title="修改密码"
       :visible.sync="visible"
       :append-to-body="true">
-      <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+      <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="100px">
         <el-form-item label="账号">
           <span>{{ userName }}</span>
         </el-form-item>
@@ -80,14 +80,15 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/sys/user/password'),
+              url: this.$http.adornUrl('/controll/up/user/possword'),
               method: 'post',
               data: this.$http.adornData({
-                'password': this.dataForm.password,
-                'newPassword': this.dataForm.newPassword
+                password: this.dataForm.password,
+                password1: this.dataForm.newPassword,
+                token: this.$cookie.get('token')
               })
             }).then(({data}) => {
-              if (data && data.code === 0) {
+              if (data.resultCode == 0) {
                 this.$message({
                   message: '操作成功',
                   type: 'success',

@@ -224,7 +224,10 @@ body{
 .viedo-uploader .el-upload i{
   display:none;
 }
-.checkViedo .el-date-editor i,.checkViedo .el-date-editor .el-range-separator{
+.checkViedo .el-date-editor i,.checkViedo .el-date-editor .el-range-separator,.checkNoraml .el-date-editor i,.checkNoraml .el-date-editor .el-range-separator{
+  line-height:26px;
+}
+.checkViedo .el-select__caret,.checkNoraml .el-select__caret{
   line-height:26px;
 }
 .el-input__inner{
@@ -240,5 +243,10 @@ body{
   line-height:6px;
 }
 .checkDatas i.el-range__icon{
-  line-height:30px;
+  line-height:26px;
+}
+.gray{
+  color: #333;
+  cursor: none;
+  margin: 0 5px;
 }

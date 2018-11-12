@@ -14,8 +14,8 @@
       <el-form-item label="渠道" prop="channel">
         <el-input v-model="dataForm.channel"></el-input>
       </el-form-item>
-      <el-form-item label="文件" prop="headImg" class="files">
-        <p class="imageUrl">{{imageUrl}}</p>
+      <el-form-item label="文件" prop="headImg" class="files" :class="{ 'is-required': !dataForm.id }">
+        <p class="imageUrl">{{dataForm.imageUrl}}</p>
         <el-upload
           class="avatar-uploader"
           :show-file-list="false"
@@ -38,7 +38,6 @@
   export default {
     data() {
       return {
-        imageUrl: '',
         url: '',
         value: '',
         visible: false,
@@ -46,7 +45,8 @@
         dataForm: {
           edition: '',
           channel: '',
-          explain: ''
+          explain: '',
+          imageUrl: ''
         },
         dataRule: {
           edition: [
@@ -63,11 +63,15 @@
         this.url = this.$http.adornUrl(`/mcn/up/app?token=${this.$cookie.get('token')}`)
         this.dataForm.id = id || 0
         this.visible = true
+        this.$nextTick(() => {
+          this.dataForm.imageUrl = ''
+          this.$refs['dataForm'].resetFields()
+        })
       },
       // 上传成功
       successHandle(response, file) {
         if (response.resultCode == 0) {
-          this.imageUrl = response.data
+          this.dataForm.imageUrl = response.data
         } else {
           this.$message.error(response.msg)
         }
@@ -112,15 +116,12 @@
   .imageUrl{
     border: 1px solid #d9d9d9;
     border-radius: 6px;
-    height:40px;
+    height:30px;
     padding-left:10px;
-    line-height:40px;
-    width:620px;
+    line-height:30px;
   }
   .files .avatar-uploader{
-    position: absolute;
-    top:0;
-    right:0;
+    margin-top:20px;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
     height:40px;

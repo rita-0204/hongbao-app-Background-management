@@ -30,7 +30,7 @@
               label="日期">
             </el-table-column>
             <el-table-column
-              prop="rmbDate"
+              prop="goldRmb"
               header-align="center"
               align="center"
               label-class-name="colorLabel"
@@ -44,7 +44,7 @@
               label="支出金币">
             </el-table-column>
             <el-table-column
-              prop="goldRmb"
+              prop="rmbDate"
               header-align="center"
               align="center"
               label-class-name="colorLabel"

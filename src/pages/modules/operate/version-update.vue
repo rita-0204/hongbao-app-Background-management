@@ -14,7 +14,7 @@
       <el-form-item label="渠道" prop="channel">
         <el-input v-model="dataForm.channel"></el-input>
       </el-form-item>
-      <el-form-item label="文件" prop="headImg" class="files">
+      <el-form-item label="文件" prop="headImg" class="files" :class="{ 'is-required': dataForm.id }">
         <p class="imageUrl">{{imageUrl}}</p>
         <el-upload
           class="avatar-uploader"
@@ -60,7 +60,6 @@
     },
     methods: {
       init(obj) {
-        console.log(obj)
         this.url = this.$http.adornUrl(`/controll/uploadpic?token=${this.$cookie.get('token')}`)
         this.dataForm.id = obj.id || 0
         this.visible = true
@@ -82,7 +81,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/mcn//app/channel'),
+              url: this.$http.adornUrl('/mcn/up/app/channel'),
               method: 'post',
               data: this.$http.adornData({
                 id:this.dataForm.id,

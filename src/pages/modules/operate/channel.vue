@@ -2,7 +2,8 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addHandle(typeName)" style="height:30px;line-height: 3px;">新增</el-button>
+        <el-button  v-if="userType == 1" type="primary" @click="powerHandle" style="height:30px;line-height: 3px;">新增</el-button>
+        <el-button v-else type="primary" @click="addHandle(typeName)" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -43,15 +44,18 @@
               label-class-name="colorLabel"
               label="操作">
               <template slot-scope="scope">
+                <div v-if="userType == 1">
+                  <el-button type="text" size="small" @click="powerHandle">修改</el-button>
+                  <el-button type="text" size="small" v-if="scope.row.status == 1" @click="powerHandle">上线</el-button>
+                  <el-button type="text" size="small" v-if="scope.row.status == 0" @click="powerHandle">下线</el-button>
+                </div>
+                <div v-else>
                 <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,scope.row.name,scope.row.sort,0)">修改</el-button>
                 <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
-                v-if="scope.row.status == 1 ">
-                  上线
-                </el-button>
+                v-if="scope.row.status == 1 ">上线</el-button>
                 <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
-                           v-if="scope.row.status == 0 ">
-                  下线
-                </el-button>
+                           v-if="scope.row.status == 0 ">下线</el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -93,15 +97,20 @@
               label-class-name="colorLabel"
               label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,scope.row.name,scope.row.sort,1)">修改</el-button>
-                <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
-                           v-if="scope.row.status == 1 ">
-                  上线
-                </el-button>
-                <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
-                           v-if="scope.row.status == 0 ">
-                  下线
-                </el-button>
+                <div v-if="userType == 1">
+                  <el-button type="text" size="small" @click="powerHandle">修改</el-button>
+                  <el-button type="text" size="small" v-if="scope.row.status == 1" @click="powerHandle">上线</el-button>
+                  <el-button type="text" size="small" v-if="scope.row.status == 0" @click="powerHandle">下线</el-button>
+                </div>
+                <div v-else>
+                  <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,scope.row.name,scope.row.sort,1)">修改</el-button>
+                  <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
+                             v-if="scope.row.status == 1 ">上线
+                  </el-button>
+                  <el-button type="text" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
+                             v-if="scope.row.status == 0 ">下线
+                  </el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -138,6 +147,14 @@
     activated () {
       this.getDataList()
     },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
+      }
+    },
     methods: {
       formatSex: function (row, column, cellValue) {
         if (cellValue == "1"){
@@ -161,8 +178,8 @@
           url: this.$http.adornUrl('/mcn/getType'),
           method: 'get',
           params: this.$http.adornParams({
-            'type': this.typeName,
-            'token': this.$cookie.get('token')
+            type: this.typeName,
+            token: this.$cookie.get('token')
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
@@ -206,9 +223,9 @@
             url: this.$http.adornUrl('/mcn/updeateType'),
             method: 'post',
             data: this.$http.adornData({
-              'id': id,
-              'status': status,
-              'token': this.$cookie.get('token')
+              id: id,
+              status: status,
+              token: this.$cookie.get('token')
             })
           }).then(({data}) => {
             if (data.resultCode == 0) {
@@ -224,6 +241,17 @@
               this.$message.error(data.msg)
             }
           })
+        })
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            this.getDataList()
+          }
         })
       }
     }

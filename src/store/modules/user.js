@@ -5,9 +5,8 @@ export default {
     name: ''
   },
   mutations: {
-    updateId (state, id) {
-      console.log(id)
-      state.id = id
+    updateType (state, type) {
+      state.type = type
     },
     updateName (state, name) {
       state.name = name
