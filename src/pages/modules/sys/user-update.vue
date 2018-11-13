@@ -61,7 +61,7 @@
           value:'业务员'
         },{
           status:1,
-          value:'管理层'
+          value:'游客'
         }]
       }
     },
@@ -72,6 +72,7 @@
         this.dataForm.menuName = obj.truename
         this.type = obj.type
         this.visible = true
+        this.Classify = obj.gname
         // 分类
         this.$http({
           url: this.$http.adornUrl('/controll/get/group/all'),
@@ -81,7 +82,7 @@
           })
         }).then(({data}) => {
           this.classifyList = data.data
-          this.Classify = data.data[0].id
+//          this.Classify = data.data[0].id
         })
       },
       selectGet2 (vId) {

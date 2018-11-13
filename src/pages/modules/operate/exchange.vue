@@ -11,7 +11,8 @@
               <el-form-item label="汇率" prop="goldNum">
                 <el-input v-model="dataForm.goldNum" placeholder="金币数量"></el-input>
               </el-form-item>
-              <el-button type="primary" @click="Submit()" style="margin-left:220px;height:30px;line-height: 3px;">保存</el-button>
+              <el-button v-if="userType == 1" type="primary" @click="powerHandle" style="margin-left:220px;height:30px;line-height: 3px;">保存</el-button>
+              <el-button v-else type="primary" @click="Submit()" style="margin-left:220px;height:30px;line-height: 3px;">保存</el-button>
             </el-form>
           </el-row>
         </el-tab-pane>
@@ -97,12 +98,20 @@
     components: {
       Update
     },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
+      }
+    },
     activated () {
       this.getDataList()
     },
     methods: {
       formatData(data){
-        return moment(data.creatdate).format('YYYY-MM-DD HH:mm:ss')
+        return moment(data.creatDate).format('YYYY-MM-DD HH:mm:ss')
       },
       handleClick(tab, event) {
         if(tab.name == 'first'){
@@ -187,6 +196,17 @@
             })
           } else {
             this.$message.error(data.msg)
+          }
+        })
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            this.getDataList()
           }
         })
       }

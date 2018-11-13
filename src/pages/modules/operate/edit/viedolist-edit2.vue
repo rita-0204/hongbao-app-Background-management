@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:50px 0;" v-show="visible">
+  <div style="padding:50px 0;background:#fff;position: absolute;top:50px;left:245px;" v-show="visible">
     <video ref="video" controls preload="auto"></video>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
              label-width="80px" class="formWidth">

@@ -28,13 +28,14 @@
             width="100%" height="100%" frameborder="0" scrolling="yes">
           </iframe>
           <keep-alive v-else>
-            <router-view v-if="item.name === mainTabsActiveName" />
+            <router-view v-if="item.name === mainTabsActiveName" style="padding-top:110px;" />
           </keep-alive>
         </el-card>
       </el-tab-pane>
     </el-tabs>
     <!-- 主入口标签页 e -->
-    <el-card v-else :body-style="siteContentViewHeight" style="box-shadow: none;border:none;background:url('../../static/img/back.jpg') no-repeat center center;width:100%;height:100vh;">
+    <el-card v-else class="backHome" :body-style="siteContentViewHeight">
+      <img src="static/img/back.jpg" alt="" style="width:99%;">
       <keep-alive>
         <router-view />
       </keep-alive>
@@ -131,6 +132,13 @@
   margin-left:230px;
   min-height:100%;
   background:#f1f4f5;
-  padding:105px 15px 15px;
+  /*padding:105px 15px 15px;*/
 }
+  .backHome{
+    /*box-shadow: none;*/
+    /*border:none;*/
+    /*background:url(/static/img/back.jpg) no-repeat center center;*/
+    /*width:100%;*/
+    /*height:100vh;*/
+  }
 </style>

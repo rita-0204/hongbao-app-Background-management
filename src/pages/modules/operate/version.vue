@@ -2,7 +2,8 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="primary" @click="addEditHander()" style="height:30px;line-height: 3px;">新增</el-button>
+        <el-button  v-if="userType == 1" type="primary" @click="powerHandle" style="height:30px;line-height: 3px;">新增</el-button>
+        <el-button v-else type="primary" @click="addEditHander()" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
     <el-form :inline="true" :model="dataForm" ref="dataForm" @keyup.enter.native="getDataList()">
@@ -54,8 +55,14 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="updateEditHander(scope.row)">编辑</el-button>
-              <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
+              <div v-if="userType == 1">
+                <el-button type="text" size="small" @click="powerHandle">编辑</el-button>
+                <el-button type="text" class="btns" size="small" @click="powerHandle">删除</el-button>
+              </div>
+              <div v-else>
+                <el-button type="text" size="small" @click="updateEditHander(scope.row)">编辑</el-button>
+                <el-button type="text" class="btns" size="small" @click="deleteHandle(scope.row.id,scope.$index)">删除</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -101,6 +108,14 @@
     components: {
       AddOrEditUpdate,
       Update
+    },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
+      }
     },
     activated () {
       this.getDataList()
@@ -195,6 +210,17 @@
             }
           })
         }).catch(() => {})
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+//            this.getDataList()
+          }
+        })
       }
     }
   }

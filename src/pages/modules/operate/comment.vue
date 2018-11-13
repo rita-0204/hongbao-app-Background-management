@@ -7,6 +7,9 @@
       <el-form-item label="用户昵称">
         <el-input v-model="dataForm.nickname" clearable></el-input>
       </el-form-item>
+      <el-form-item label="评论内容关键字">
+        <el-input v-model="dataForm.content" clearable></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()" class="checkBtns" style="line-height: 3px;margin-top:6px;">查询</el-button>
       </el-form-item>
@@ -82,8 +85,14 @@
             label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">通过</el-button>
-              <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">不通过</el-button>
+              <div v-if="userType == 1">
+                <el-button type="text" size="small" @click="powerHandle">通过</el-button>
+                <el-button type="text" size="small" @click="powerHandle">不通过</el-button>
+              </div>
+              <div v-else>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">通过</el-button>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">不通过</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -117,6 +126,14 @@
         dataListSelections: [],
         activeName2: 'first',
         typeName: 0
+      }
+    },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
       }
     },
     activated () {
@@ -184,6 +201,7 @@
               params: this.$http.adornParams({
                 nickname: this.dataForm.nickname,
                 userid: this.dataForm.userid,
+                content:this.dataForm.content,
                 page: this.pageIndex - 1,
                 token: this.$cookie.get('token')
               })
@@ -211,6 +229,17 @@
       currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+//            this.getDataList()
+          }
+        })
       }
     }
   }

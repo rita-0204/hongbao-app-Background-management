@@ -15,9 +15,9 @@
         <el-input v-model="dataForm.channel"></el-input>
       </el-form-item>
       <el-form-item label="文件" prop="headImg" class="files" :class="{ 'is-required': !dataForm.id }">
-        <p class="imageUrl">{{dataForm.imageUrl}}</p>
+        <p class="imageUrl"><span>{{dataForm.imageUrl}}</span></p>
         <el-upload
-          class="avatar-uploader"
+          class="avatar-uploader uploaderStyle"
           :show-file-list="false"
           :action="url"
           :on-success="successHandle">
@@ -87,7 +87,7 @@
                 edition:this.dataForm.edition,
                 channel:this.dataForm.channel,
                 explain:this.dataForm.explain,
-                uploading:this.imageUrl,
+                uploading:this.dataForm.imageUrl,
                 token: this.$cookie.get('token')
               })
             }).then(({data}) => {
@@ -116,9 +116,12 @@
   .imageUrl{
     border: 1px solid #d9d9d9;
     border-radius: 6px;
-    height:30px;
-    padding-left:10px;
-    line-height:30px;
+    padding-left: 10px;
+    line-height: 30px;
+    min-height: 30px;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
   }
   .files .avatar-uploader{
     margin-top:20px;

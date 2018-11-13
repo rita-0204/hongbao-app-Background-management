@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button  v-if="userType == 1" type="primary" @click="powerHandle" style="height:30px;line-height: 3px;">新增</el-button>
+        <el-button v-if="userType == 1" type="primary" @click="powerHandle" style="height:30px;line-height: 3px;">新增</el-button>
         <el-button v-else type="primary" @click="addHandle(typeName)" style="height:30px;line-height: 3px;">新增</el-button>
       </el-form-item>
     </el-form>
@@ -144,9 +144,6 @@
       Update,
       Add
     },
-    activated () {
-      this.getDataList()
-    },
     computed:{
       //得到管理员type
       userType:{
@@ -154,6 +151,9 @@
           return this.$store.state.user.type
         }
       }
+    },
+    activated () {
+      this.getDataList()
     },
     methods: {
       formatSex: function (row, column, cellValue) {
@@ -250,7 +250,7 @@
           type: 'success',
           duration: 1500,
           onClose: () => {
-            this.getDataList()
+//            this.getDataList()
           }
         })
       }

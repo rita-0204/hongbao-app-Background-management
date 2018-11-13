@@ -4,7 +4,25 @@
       <el-form-item label="手机号码">
         <el-input v-model="dataForm.mobile" clearable></el-input>
       </el-form-item>
-      <el-form-item label="注册时间">
+      <el-form-item label="提现状态">
+        <el-select v-model="status" placeholder="全部">
+          <el-option v-for="item in statusList"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="提现方式">
+        <el-select v-model="type" placeholder="全部">
+          <el-option v-for="item in typeList"
+                     :key="item.value"
+                     :label="item.label"
+                     :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="提现时间">
         <el-date-picker
           v-model="dataForm.regdata"
           type="daterange"
@@ -16,7 +34,7 @@
           class="checkDatas" style="margin-top:4px;">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="最后登录">
+      <el-form-item label="到账时间">
         <el-date-picker
           v-model="dataForm.enddata"
           type="daterange"
@@ -40,45 +58,53 @@
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
-            prop="nickname"
+            prop="mobile"
+            label-class-name="colorLabel"
             header-align="center"
             align="center"
             label="昵称">
           </el-table-column>
           <el-table-column
             prop="mobile"
+            label-class-name="colorLabel"
             header-align="center"
             align="center"
             label="手机号码">
           </el-table-column>
           <el-table-column
-            prop="sex"
+            prop="nickname"
+            label-class-name="colorLabel"
             header-align="center"
             align="center"
             label="姓名">
           </el-table-column>
           <el-table-column
-            prop="type"
+            prop="idcard"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="身份证号">
           </el-table-column>
           <el-table-column
-            prop="type"
+            prop="rmb"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="提现金额">
           </el-table-column>
           <el-table-column
             prop="type"
             header-align="center"
             align="center"
+            :formatter="formatType"
+            label-class-name="colorLabel"
             label="提现方式">
           </el-table-column>
           <el-table-column
-            prop="regdate"
+            prop="createTime"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatData"
             label="提现时间">
           </el-table-column>
@@ -92,9 +118,10 @@
             label="状态">
           </el-table-column>
           <el-table-column
-            prop="lastlogintime"
+            prop="succTime"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatDataend"
             label="到账时间">
           </el-table-column>
@@ -118,6 +145,46 @@
   export default {
     data () {
       return {
+        status:'',
+        statusList: [{
+          value: '',
+          label: '全部'
+        },{
+          value: 0,
+          label: '成功'
+        },{
+          value: 1,
+          label: '提现中'
+        },{
+          value: 2,
+          label: '打款失败'
+        },{
+          value: 3,
+          label: '审核中'
+        },{
+          value: 4,
+          label: '审核通过'
+        },{
+          value: 5,
+          label: '订单发送成功'
+        },{
+          value:6,
+          label: '待打款(暂停处理)'
+        },{
+          value: 7,
+          label: '退款成功'
+        }],
+        type:'',
+        typeList: [{
+          value: '',
+          label: '全部'
+        },{
+          value: 1,
+          label: '支付宝'
+        },{
+          value: 2,
+          label: '微信'
+        }],
         dataForm: {
           roleName: ''
         },
@@ -136,32 +203,51 @@
     },
     methods: {
       formatData(data){
-        return moment(data.regdate).format('YYYY-MM-DD HH:mm:ss')
+        return moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
       },
       formatDataend(data){
-        return moment(data.lastlogintime).format('YYYY-MM-DD HH:mm:ss')
+        return moment(data.succTime).format('YYYY-MM-DD HH:mm:ss')
       },
       formatStatus: function (row, column, cellValue) {
         if (cellValue == "0"){
-          return '正常';
+          return '成功';
         }else if (cellValue == "1"){
-          return '禁封';
+          return '提现中';
+        }else if (cellValue == "2"){
+          return '打款失败';
+        }else if (cellValue == "3"){
+          return '审核中';
+        }else if (cellValue == "4"){
+          return '审核通过';
+        }else if (cellValue == "5"){
+          return '订单发送成功';
+        }else if (cellValue == "6"){
+          return '待打款(暂停处理)';
+        }else if (cellValue == "7"){
+          return '退款成功';
+        }
+      },
+      formatType: function (row, column, cellValue) {
+        if (cellValue == "1"){
+          return '支付宝';
+        }else if (cellValue == "2"){
+          return '微信';
         }
       },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/mcn/getlistuser'),
-          method: 'get',
-          params: this.$http.adornParams({
-            id:this.dataForm.id,
+          url: this.$http.adornUrl('/mcn/get/app/record'),
+          method: 'post',
+          data: this.$http.adornData({
+            type:this.type,
             mobile:this.dataForm.mobile,
-            nikename: this.dataForm.nickname,
-            regdate1:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[0], //new Date(this.dataForm.regdata).getTime(),
-            regdate2:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[1],
-            lastlogintime1: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[0],
-            lastlogintime2: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[1],
+            status: this.status,
+            createTime1:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[0], //new Date(this.dataForm.regdata).getTime(),
+            createTime2:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[1],
+            succTime1: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[0],
+            succTime2: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[1],
             token: this.$cookie.get('token')
           })
         }).then(({data}) => {

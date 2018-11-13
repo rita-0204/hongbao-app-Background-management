@@ -114,6 +114,16 @@
             align="center"
             label="操作">
             <template slot-scope="scope">
+              <div v-if="userType == 1">
+                <el-button type="text" size="small" @click="powerHandle" style="margin-right:10px;">详情</el-button>
+                <el-button type="text" class="btns" size="small"
+                           @click="powerHandle"
+                           v-if="scope.row.status == 1 ">解封用户</el-button>
+                <el-button type="text" class="btns" size="small"
+                           @click="powerHandle"
+                           v-if="scope.row.status == 0 ">封禁用户</el-button>
+              </div>
+              <div v-else>
               <el-button type="text" size="small" @click="detailHandle(scope.row.id)" style="margin-right:10px;">详情</el-button>
               <el-button type="text" class="btns" size="small"
                          @click="stateHandle(scope.row.id,scope.row.status)"
@@ -121,6 +131,7 @@
               <el-button type="text" class="btns" size="small"
                          @click="stateHandle(scope.row.id,scope.row.status)"
                          v-if="scope.row.status == 0 ">封禁用户</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -161,6 +172,14 @@
     },
     components: {
       detailUpdate
+    },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
+      }
     },
     activated () {
       this.getDataList()
@@ -220,6 +239,7 @@
             id:this.dataForm.id,
             mobile:this.dataForm.mobile,
             nikename: this.dataForm.nickname,
+            page: this.pageIndex - 1,
             regdate1:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[0], //new Date(this.dataForm.regdata).getTime(),
             regdate2:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[1],
             lastlogintime1: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[0],
@@ -285,6 +305,17 @@
               this.$message.error(data.msg)
             }
           })
+        })
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+//            this.getDataList()
+          }
         })
       }
     }

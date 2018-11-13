@@ -153,12 +153,22 @@
             label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
-              <router-link :to="{path:'viedoEdit',query:{ id:scope.row.id }}" tag="button" style="color:#409EFF;cursor: pointer;">编辑</router-link>
-              <!--<el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>-->
+              <div v-if="userType == 1">
+                <!--<el-button type="text" class="btns" size="small" @click="powerHandle">编辑</el-button>-->
+                <el-button type="text" size="small" @click="powerHandle">编辑</el-button>
+                <el-button type="text" class="btns" size="small" @click="powerHandle"
+                           v-if="scope.row.status == 1 ">上线</el-button>
+                <el-button type="text" class="btns" size="small" @click="powerHandle"
+                           v-if="scope.row.status == 0 ">下线</el-button>
+              </div>
+              <div v-else>
+              <!--<router-link :to="{path:'viedoEdit',query:{ id:scope.row.id }}" tag="button" style="color:#409EFF;cursor: pointer;">编辑</router-link>-->
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                          v-if="scope.row.status == 1 ">上线</el-button>
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                          v-if="scope.row.status == 0 ">下线</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -201,7 +211,7 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: true,
+        addOrUpdateVisible: false,
         activeName2: 'first',
         typeName: 0,
         checkList: [{
@@ -226,6 +236,14 @@
     },
     components: {
       AddOrUpdate
+    },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
+      }
     },
     activated () {
       this.getDataList()
@@ -378,6 +396,17 @@
               this.$message.error(data.msg)
             }
           })
+        })
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+//            this.getDataList()
+          }
         })
       }
     }
