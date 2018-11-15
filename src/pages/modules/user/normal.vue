@@ -240,6 +240,7 @@
             mobile:this.dataForm.mobile,
             nikename: this.dataForm.nickname,
             page: this.pageIndex - 1,
+            pagesize: this.pageSize,
             regdate1:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[0], //new Date(this.dataForm.regdata).getTime(),
             regdate2:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[1],
             lastlogintime1: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[0],

@@ -163,7 +163,7 @@
               </div>
               <div v-else>
               <!--<router-link :to="{path:'viedoEdit',query:{ id:scope.row.id }}" tag="button" style="color:#409EFF;cursor: pointer;">编辑</router-link>-->
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id,channel)">编辑</el-button>
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
                          v-if="scope.row.status == 1 ">上线</el-button>
               <el-button type="text" class="btns" size="small" @click="stateHandle(scope.row.id,scope.row.status)"
@@ -284,7 +284,8 @@
             dateend: moment(this.dateValue[1]).format('YYYY-MM-DD HH:mm:ss'),
             status: this.state,
             newstype: this.channel,
-            page: this.pageIndex - 1
+            page: this.pageIndex - 1,
+            pagesize: this.pageSize
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
@@ -353,10 +354,10 @@
         this.getDataList()
       },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
+      addOrUpdateHandle (id,channel) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.addOrUpdate.init(id,channel)
         })
       },
       //上线

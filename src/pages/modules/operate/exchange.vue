@@ -49,7 +49,30 @@
               header-align="center"
               align="center"
               label-class-name="colorLabel"
-              label="支出现金">
+              label="折算现金">
+            </el-table-column>
+            <el-table-column
+              prop="peopleRmb"
+              header-align="center"
+              align="center"
+              label-class-name="colorLabel"
+              label="邀请好友">
+            </el-table-column>
+            <el-table-column
+              prop="userRmb"
+              header-align="center"
+              align="center"
+              label-class-name="colorLabel"
+              label="新人红包">
+            </el-table-column>
+            <el-table-column
+              header-align="center"
+              align="center"
+              label-class-name="colorLabel"
+              label="合计">
+              <template slot-scope="scope">
+                <div>{{(scope.row.rmbDate+scope.row.peopleRmb+scope.row.userRmb+"").substring(0,(scope.row.rmbDate+scope.row.peopleRmb+scope.row.userRmb+"").indexOf(".")+3)}}</div>
+              </template>
             </el-table-column>
           </el-table>
           <el-pagination
@@ -130,6 +153,7 @@
           method: 'post',
           data: this.$http.adornData({
             page: this.pageIndex - 1,
+            pagesize: this.pageSize,
             token: this.$cookie.get('token')
           })
         }).then(({data}) => {

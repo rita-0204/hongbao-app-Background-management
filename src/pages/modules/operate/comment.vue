@@ -203,6 +203,7 @@
                 userid: this.dataForm.userid,
                 content:this.dataForm.content,
                 page: this.pageIndex - 1,
+                pagesize: this.pageSize,
                 token: this.$cookie.get('token')
               })
             }).then(({data}) => {

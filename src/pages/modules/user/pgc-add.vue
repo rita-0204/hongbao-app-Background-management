@@ -208,7 +208,7 @@
     border-color: #409EFF;
   }
 
-  .avatar-uploader-icon {
+  .avatar-uploader .el-icon-plus.avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
     width: 90px;

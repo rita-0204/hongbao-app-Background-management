@@ -208,7 +208,7 @@
       VueCropper,
     },
     methods: {
-      init(id) {
+      init(id,channel) {
         this.url = this.$http.adornUrl(`/controll/uploadpic?token=${this.$cookie.get('token')}`)
         this.dataForm.id = id
         this.visible = true
@@ -244,6 +244,7 @@
             method: 'post',
             data: this.$http.adornData({
               id: id,
+//              newstype:channel,
               token: this.$cookie.get('token')
             })
           }).then(({data}) => {

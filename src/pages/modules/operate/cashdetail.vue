@@ -248,7 +248,9 @@
             createTime2:this.dataForm.regdata == undefined ? '' : this.dataForm.regdata[1],
             succTime1: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[0],
             succTime2: this.dataForm.enddata == undefined ? '' : this.dataForm.enddata[1],
-            token: this.$cookie.get('token')
+            token: this.$cookie.get('token'),
+            page: this.pageIndex - 1,
+            pagesize: this.pageSize
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {

@@ -210,6 +210,7 @@
                 nickname: this.dataForm.nickname,
                 id: this.dataForm.id,
                 page: this.pageIndex - 1,
+                pagesize: this.pageSize,
                 token: this.$cookie.get('token')
               })
             }).then(({data}) => {

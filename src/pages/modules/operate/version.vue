@@ -150,6 +150,7 @@
                 edition:this.dataForm.edition,
                 channel:this.dataForm.channel,
                 page: this.pageIndex - 1,
+                pagesize: this.pageSize,
                 token: this.$cookie.get('token')
               })
             }).then(({data}) => {
