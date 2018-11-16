@@ -72,7 +72,7 @@
         this.dataForm.menuName = obj.truename
         this.type = obj.type
         this.visible = true
-        this.Classify = obj.gname
+        this.Classify = obj.gid
         // 分类
         this.$http({
           url: this.$http.adornUrl('/controll/get/group/all'),

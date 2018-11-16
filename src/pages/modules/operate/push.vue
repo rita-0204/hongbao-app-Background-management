@@ -31,70 +31,70 @@
             prop="name"
             header-align="center"
             align="center"
-            width="100"
+            label-class-name="colorLabel"
             label="通知ID">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="100"
+            label-class-name="colorLabel"
             label="内容类型">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="180"
+            label-class-name="colorLabel"
             label="标题">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="100"
+            label-class-name="colorLabel"
             label="目标设备">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="150"
+            label-class-name="colorLabel"
             label="推送时间">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="80"
+            label-class-name="colorLabel"
             label="发送数">
           </el-table-column>
           <el-table-column
             prop="name"
             header-align="center"
             align="center"
-            width="80"
+            label-class-name="colorLabel"
             label="到达数">
           </el-table-column>
           <el-table-column
             fixed="right"
             header-align="center"
             align="center"
-            width="80"
+            label-class-name="colorLabel"
             label="打开数">
           </el-table-column>
           <el-table-column
             fixed="right"
             header-align="center"
             align="center"
-            width="80"
+            label-class-name="colorLabel"
             label="到达率">
           </el-table-column>
           <el-table-column
             fixed="right"
             header-align="center"
             align="center"
-            width="80"
+            label-class-name="colorLabel"
             label="打开率">
           </el-table-column>
         </el-table>

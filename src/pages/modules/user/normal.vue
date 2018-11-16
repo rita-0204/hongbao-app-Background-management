@@ -48,6 +48,7 @@
           <el-table-column
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="用户头像">
             <template slot-scope="scope">
               <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
@@ -57,29 +58,34 @@
             prop="id"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="用户ID">
           </el-table-column>
           <el-table-column
             prop="nickname"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="用户昵称">
           </el-table-column>
           <el-table-column
             prop="mobile"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="手机号码">
           </el-table-column>
           <el-table-column
             prop="sex"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatSex"
             label="性别">
           </el-table-column>
           <el-table-column
             prop="regdate"
+            label-class-name="colorLabel"
             header-align="center"
             align="center"
             :formatter="formatData"
@@ -89,6 +95,7 @@
             prop="lastlogintime"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatDataend"
             label="最后登录">
           </el-table-column>
@@ -96,6 +103,7 @@
             prop="type"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatTpye"
             label="类型">
           </el-table-column>
@@ -112,10 +120,11 @@
             fixed="right"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
               <div v-if="userType == 1">
-                <el-button type="text" size="small" @click="powerHandle" style="margin-right:10px;">详情</el-button>
+                <el-button type="text" size="small" @click="detailHandle(scope.row.id)" style="margin-right:10px;">详情</el-button>
                 <el-button type="text" class="btns" size="small"
                            @click="powerHandle"
                            v-if="scope.row.status == 1 ">解封用户</el-button>

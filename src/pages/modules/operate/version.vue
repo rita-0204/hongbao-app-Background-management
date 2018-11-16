@@ -28,24 +28,28 @@
             prop="edition"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="版本">
           </el-table-column>
           <el-table-column
             prop="channel"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="渠道">
           </el-table-column>
           <el-table-column
             prop="uploading"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="文件">
           </el-table-column>
           <el-table-column
             prop="createTime"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatData"
             label="更新时间">
           </el-table-column>
@@ -53,6 +57,7 @@
             fixed="right"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
               <div v-if="userType == 1">
@@ -235,6 +240,6 @@
     }
   }
   .btns{
-    margin-left:0;
+    /*margin-left:0;*/
   }
 </style>

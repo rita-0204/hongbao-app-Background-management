@@ -1,7 +1,6 @@
 <template>
   <div class="mod-role">
-    <el-form :inline="true" :model="dataForm" class="checkNoraml" ref="dataForm" @keyup.enter.native="getDataList()"
-    style="position: relative;">
+    <el-form :inline="true" :model="dataForm" class="checkNoraml" ref="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="手机号码">
         <el-input v-model="dataForm.mobile" clearable></el-input>
       </el-form-item>
@@ -35,25 +34,12 @@
           class="checkDatas" style="margin-top:4px;">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="到账时间">
-        <el-date-picker
-          v-model="dataForm.enddata"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :default-time="['00:00:00', '23:59:59']"
-          value-format="yyyy-MM-dd HH:mm:ss"
-        class="checkDatas" style="margin-top:4px;">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()" class="checkBtns" style="line-height: 3px;">查询</el-button>
       </el-form-item>
-      <span style="position: absolute;right:10%;bottom:-25%;color:#fc2a41;">总计提现：{{totalRmb}} 元</span>
     </el-form>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon">
-      <el-tab-pane label="提现明细" name="first">
+      <el-tab-pane label="提现审核" name="first">
         <el-table
           :data="dataList"
           border
@@ -120,14 +106,20 @@
             label="状态">
           </el-table-column>
           <el-table-column
+            fixed="right"
             header-align="center"
             align="center"
-            width="200"
             label-class-name="colorLabel"
-            label="到账时间">
+            label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" v-if="scope.row.succTime !== ''">{{scope.row.succTime}}</el-button>
-              <el-button v-else type="text" size="small"></el-button>
+              <div v-if="userType == 1">
+                <el-button type="text" size="small" @click="powerHandle">通过</el-button>
+                <el-button type="text" size="small" @click="powerHandle">拒绝</el-button>
+              </div>
+              <div v-else>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">通过</el-button>
+                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">拒绝</el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -150,7 +142,6 @@
   export default {
     data () {
       return {
-        totalRmb:'',
         status:'',
         statusList: [{
           value: '',
@@ -204,13 +195,16 @@
         typeName: 0
       }
     },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
+      }
+    },
     activated () {
       this.getDataList()
-    },
-    filters:{
-      dateFrm: function(el){
-        return moment(el).format('YYYY-MM-DD HH:mm:ss')
-      }
     },
     methods: {
       formatData(data){
@@ -265,7 +259,6 @@
           })
         }).then(({data}) => {
           if (data.resultCode == 0) {
-            this.totalRmb = data.data.rmb
             this.dataList = data.data.list
             this.totalPage = data.data.total
           } else {
@@ -285,6 +278,48 @@
       currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
+      },
+      UpdateHandle(id,status){
+        this.$confirm(`确定对[id=${id}]进行${status == 3 ? '通过' : '拒绝'}操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/mcn/updateComment'),
+            method: 'post',
+            data: this.$http.adornData({
+              id: id,
+              status: status,//2是不通过  3是通过
+              token: this.$cookie.get('token')
+            })
+          }).then(({data}) => {
+            if (data.resultCode == 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.data.msg)
+            }
+          })
+        })
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+//            this.getDataList()
+          }
+        })
       }
     }
   }

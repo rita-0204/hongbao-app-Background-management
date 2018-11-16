@@ -224,7 +224,11 @@ body{
 .viedo-uploader .el-upload i{
   display:none;
 }
-.checkViedo .el-date-editor i,.checkViedo .el-date-editor .el-range-separator,.checkNoraml .el-date-editor i,.checkNoraml .el-date-editor .el-range-separator{
+.checkViedo .el-date-editor i,
+.checkViedo .el-date-editor .el-range-separator,
+.checkNoraml .el-date-editor i,
+.checkNoraml .el-date-editor .el-range-separator,
+.normalDialog .el-date-editor .el-range-separator{
   line-height:26px;
 }
 .checkViedo .el-select__caret,.checkNoraml .el-select__caret{
@@ -255,4 +259,7 @@ body{
 }
 .uploaderStyle.avatar-uploader .el-upload{
   border:none;
+}
+.normalDialog .el-dialog{
+  width:90%;
 }

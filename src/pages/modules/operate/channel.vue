@@ -164,12 +164,12 @@
         }
       },
       handleClick(tab, event) {
-        if(tab.name == 'first'){
-          this.typeName = 0;
-        }else if(tab.name == 'second'){
-          this.typeName = 1
-        }
-        this.getDataList ()
+//        if(tab.name == 'first'){
+//          this.typeName = 0;
+//        }else if(tab.name == 'second'){
+//          this.typeName = 1
+//        }
+//        this.getDataList ()
       },
       // 获取数据列表
       getDataList () {

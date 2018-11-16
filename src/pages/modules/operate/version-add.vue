@@ -8,8 +8,14 @@
       <el-form-item label="版本" prop="edition">
         <el-input v-model="dataForm.edition"></el-input>
       </el-form-item>
-      <el-form-item label="更新" prop="explain">
+      <el-form-item label="内部版本号" prop="explain">
+        <el-input type="number" v-model="dataForm.code"></el-input>
+      </el-form-item>
+      <el-form-item label="版本说明" prop="explain">
         <el-input v-model="dataForm.explain"></el-input>
+      </el-form-item>
+      <el-form-item label="更新" prop="explain">
+        <el-input v-model="dataForm.upexplain"></el-input>
       </el-form-item>
       <el-form-item label="渠道" prop="channel">
         <el-input v-model="dataForm.channel"></el-input>
@@ -45,7 +51,9 @@
         dataForm: {
           edition: '',
           channel: '',
-          explain: '',
+          code:'',
+          explain:'',
+          upexplain: '',
           imageUrl: ''
         },
         dataRule: {
@@ -86,6 +94,8 @@
               data: this.$http.adornData({
                 edition:this.dataForm.edition,
                 channel:this.dataForm.channel,
+                upexplain:this.dataForm.upexplain,
+                code:this.dataForm.code,
                 explain:this.dataForm.explain,
                 uploading:this.dataForm.imageUrl,
                 token: this.$cookie.get('token')

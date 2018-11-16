@@ -28,7 +28,7 @@
             label="用户头像"
             header-align="center"
             align="center"
-            >
+            label-class-name="colorLabel">
             <template slot-scope="scope">
               <img :src="scope.row.headurl" width="40" height="40" class="head_pic"/>
             </template>
@@ -37,18 +37,21 @@
             prop="id"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="用户ID">
           </el-table-column>
           <el-table-column
             prop="nickname"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="用户昵称">
           </el-table-column>
           <el-table-column
             prop="sex"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatSex"
             label="性别">
           </el-table-column>
@@ -56,6 +59,7 @@
             prop="type"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatType"
             label="类型">
           </el-table-column>
@@ -63,18 +67,21 @@
             prop="typeName"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="频道">
           </el-table-column>
           <el-table-column
             prop="url"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="爬虫链接">
           </el-table-column>
           <el-table-column
             prop="status"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             :formatter="formatStatus"
             label="状态">
           </el-table-column>
@@ -82,6 +89,7 @@
             fixed="right"
             header-align="center"
             align="center"
+            label-class-name="colorLabel"
             label="操作">
             <template slot-scope="scope">
               <div v-if="userType == 1">
