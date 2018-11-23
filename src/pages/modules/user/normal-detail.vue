@@ -8,21 +8,21 @@
         <img :src="imageUrl" alt="" class="avatar" style="margin:0 auto;">
       </el-col>
       <el-col :p="2">
-        <el-col :span="25" style="font-size:28px;margin-bottom:20px;">{{roleName}}</el-col>
-        <el-col :span="15">{{tag}}这个家伙很懒，什么也没留下</el-col>
+        <el-col :span="25" style="font-size:28px;margin-bottom:20px;width:100%;">{{roleName}}</el-col>
+        <el-col :span="15">{{sign}}</el-col>
       </el-col>
       <el-row :gutter="10" style="float:right;" class="totalDetail">
         <el-col :p="2">
-          <el-col :span="25">当前余额：</el-col><el-col :span="8">{{rmb}} 元</el-col>
+          <el-col :span="25">当前余额：</el-col><el-col :span="13">{{rmb}} 元</el-col>
         </el-col>
         <el-col :p="2">
-          <el-col :span="25">今日金币：</el-col><el-col :span="8">{{gold}}</el-col>
+          <el-col :span="25">今日金币：</el-col><el-col :span="13">{{gold}}</el-col>
         </el-col>
         <el-col :p="2">
-          <el-col :span="35">累计收入：</el-col><el-col :span="8">{{sumRmb}} 元</el-col>
+          <el-col :span="35">累计收入：</el-col><el-col :span="13">{{sumRmb}} 元</el-col>
         </el-col>
         <el-col :p="2">
-          <el-col :span="35">累计金币：</el-col><el-col :span="8">{{sumGold}}</el-col>
+          <el-col :span="35">累计金币：</el-col><el-col :span="13">{{sumGold}}</el-col>
         </el-col>
       </el-row>
     </el-row>
@@ -50,6 +50,12 @@
       </el-col>
       <el-col :p="3">
         <el-col :span="7">最后登录：</el-col><el-col :span="15">{{endtime | dateFrm}}</el-col>
+      </el-col>
+      <el-col :p="3">
+        <el-col :span="5">渠道：</el-col><el-col :span="6">{{status}}</el-col>
+      </el-col>
+      <el-col :p="3">
+        <el-col :span="7">邀请码：</el-col><el-col :span="15">{{invitationCode}}</el-col>
       </el-col>
     </el-row>
     <el-tabs v-model="activeName2" type="card" class="tabs-icon" @tab-click="handleClick">
@@ -156,11 +162,11 @@
             label="时间">
           </el-table-column>
           <el-table-column
-            prop="gold"
+            prop="rmb"
             header-align="center"
             align="center"
             label-class-name="colorLabel"
-            label="金币">
+            label="现金">
           </el-table-column>
         </el-table>
         <el-pagination
@@ -206,25 +212,128 @@
             label="注册时间">
           </el-table-column>
           <el-table-column
-            prop="day1"
             header-align="center"
-            align="center"
+            align="left"
             label-class-name="colorLabel"
             label="第一天">
+            <template slot-scope="scope">
+              <div v-if="userType == 1">
+                <div v-if="scope.row.day1 !== 0">
+                  <span v-if="scope.row.status1 == 1" class="mar5 back">+ {{scope.row.day1}} 元 </span>
+                  <span v-else class="mar5">+ {{scope.row.day1}} 元 </span>
+                  <el-button type="text" size="small"
+                             v-if="scope.row.status1 == 0"
+                             @click="powerHandle"> 冻结</el-button>
+                  <el-button type="text" size="small"
+                             v-else-if="scope.row.status1 == 1"
+                             @click="powerHandle"> 解冻</el-button>
+                </div>
+                <div v-else>
+                  <span class="mar5">+ {{scope.row.day1}} 元 </span>
+                </div>
+              </div>
+              <div v-else-if="btnStatus == 0">
+                <span class="mar5" style="margin-left:40%;">+ {{scope.row.day1}} 元 </span>
+              </div>
+              <div v-else>
+                <div v-if="scope.row.day1 !== 0">
+                  <span v-if="scope.row.status1 == 1" class="mar5 back">+ {{scope.row.day1}} 元 </span>
+                  <span v-else class="mar5">+ {{scope.row.day1}} 元 </span>
+                  <el-button type="text" size="small"
+                     v-if="scope.row.status1 == 0"
+                     @click="UpdateHandle(scope.row.id,18,1)"> 冻结</el-button>
+                  <el-button type="text" size="small"
+                     v-else-if="scope.row.status1 == 1"
+                     @click="UpdateHandle(scope.row.id,18,0)"> 解冻</el-button>
+                </div>
+                <div v-else>
+                  <span class="mar5">+ {{scope.row.day1}} 元 </span>
+                </div>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="day2"
             header-align="center"
-            align="center"
+            align="left"
             label-class-name="colorLabel"
             label="第二天">
+            <template slot-scope="scope">
+              <div v-if="userType == 1">
+                <div v-if="scope.row.day2 !== 0">
+                  <span v-if="scope.row.status2 == 1" class="mar5 back">+ {{scope.row.day2}} 元 </span>
+                  <span v-else class="mar5">+ {{scope.row.day2}} 元 </span>
+                  <el-button type="text" size="small"
+                             v-if="scope.row.status2 == 0"
+                             @click="powerHandle"> 冻结</el-button>
+                  <el-button type="text" size="small"
+                             v-else-if="scope.row.status2 == 1"
+                             @click="powerHandle"> 解冻</el-button>
+                </div>
+                <div v-else>
+                  <span class="mar5">+ {{scope.row.day2}} 元 </span>
+                </div>
+              </div>
+              <div v-else-if="btnStatus == 0">
+                <span class="mar5" style="margin-left:40%;">+ {{scope.row.day2}} 元 </span>
+              </div>
+              <div v-else>
+                <div v-if="scope.row.day2 !== 0">
+                  <span v-if="scope.row.status2 == 1" class="mar5 back">+ {{scope.row.day2}} 元 </span>
+                  <span v-else class="mar5">+ {{scope.row.day2}} 元 </span>
+                  <el-button type="text" size="small"
+                             v-if="scope.row.status2 == 0"
+                             @click="UpdateHandle(scope.row.id,19,1)"> 冻结</el-button>
+                  <el-button type="text" size="small"
+                             v-else-if="scope.row.status2 == 1"
+                             @click="UpdateHandle(scope.row.id,19,0)"> 解冻</el-button>
+                </div>
+                <div v-else>
+                  <span class="mar5">+ {{scope.row.day2}} 元 </span>
+                </div>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="day3"
             header-align="center"
-            align="center"
+            align="left"
+            class="padLeft"
             label-class-name="colorLabel"
             label="第三天">
+            <template slot-scope="scope">
+              <div v-if="userType == 1">
+                <div v-if="scope.row.day3 !== 0">
+                  <span v-if="scope.row.status3 == 1" class="mar5 back">+ {{scope.row.day3}} 元 </span>
+                  <span v-else class="mar5">+ {{scope.row.day3}} 元 </span>
+                  <el-button type="text" size="small"
+                             v-if="scope.row.status3 == 0 "
+                             @click="powerHandle"> 冻结</el-button>
+                  <el-button type="text" size="small"
+                             v-else-if="scope.row.status3 == 1 "
+                             @click="powerHandle"> 解冻</el-button>
+                </div>
+                <div v-else>
+                  <span class="mar5">+ {{scope.row.day3}} 元 </span>
+                </div>
+              </div>
+              <div v-else-if="btnStatus == 0">
+                <span class="mar5" style="margin-left:40%;">+ {{scope.row.day3}} 元 </span>
+              </div>
+              <div v-else>
+                <div v-if="scope.row.day3 !== 0">
+                  <span v-if="scope.row.status3 == 1" class="mar5 back">+ {{scope.row.day3}} 元 </span>
+                  <span v-else class="mar5">+ {{scope.row.day3}} 元 </span>
+                  <el-button type="text" size="small"
+                             v-if="scope.row.status3 == 0 "
+                             @click="UpdateHandle(scope.row.id,20,1)">冻结</el-button>
+                  <el-button type="text" size="small"
+                             v-else-if="scope.row.status3 == 1 "
+                             @click="UpdateHandle(scope.row.id,20,0)">解冻</el-button>
+                </div>
+                <div v-else>
+                  <span class="mar5">+ {{scope.row.day3}} 元 </span>
+                </div>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column
             prop="num"
@@ -258,7 +367,7 @@
         roleName: '',
         userId:'',
         mobile:'',
-        tag:'',
+        sign:'',
         id:'',
         sex:0,
         rmb:'',
@@ -268,6 +377,7 @@
         regdate:'',
         address:'',
         birthday:'',
+        invitationCode:'',
         status:'',
         endtime:'',
         visible: false,
@@ -288,12 +398,21 @@
         endDate1:'',
         typeName:0,
         userid:'',
-        page:''
+        page:'',
+        btnStatus:''
       }
     },
     filters:{
       dateFrm: function(el){
         return moment(el).format('YYYY-MM-DD HH:mm:ss')
+      }
+    },
+    computed:{
+      //得到管理员type
+      userType:{
+        get(){
+          return this.$store.state.user.type
+        }
       }
     },
     methods: {
@@ -315,7 +434,7 @@
           if (data.resultCode == 0) {
             vm.imageUrl = data.data.headurl
             vm.roleName = data.data.nickname
-            vm.tag = data.data.tag
+            vm.sign = data.data.sign
             vm.userId = data.data.id
             vm.mobile = data.data.mobile
             if(data.data.sex == 0){
@@ -332,12 +451,14 @@
             vm.regdate = data.data.regdate
             vm.address = data.data.region
             vm.birthday = data.data.birthday
+            vm.invitationCode = data.data.invitationCode
             if(data.data.sex == 0){
               vm.status = '正常'
             }else if(data.data.sex == 1){
               vm.status = '封禁'
             }
             vm.endtime = data.data.lastlogintime
+            vm.btnStatus = data.data.tixian
           }
         })
         vm.getDataList (id)
@@ -400,7 +521,7 @@
           url: this.$http.adornUrl('/mcn/get/user/friend'),
           method: 'post',
           data: this.$http.adornData({
-            userid: 9656,
+            userid: id,
             token: this.$cookie.get('token'),
             startDate1:this.valueData3[0],
             endDate1:this.valueData3[1],
@@ -451,6 +572,49 @@
       currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList(this.userid)
+      },
+      // 权限
+      powerHandle () {
+        this.$message({
+          message: '您没有权限，请联系管理员',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+//            this.getDataList()
+          }
+        })
+      },
+      UpdateHandle(userid,taskid,status1){
+        this.$confirm(`确定对[id=${userid}]进行${status1 == 0 ? '解冻' : '冻结'}操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/mcn/up/user/day'),
+            method: 'post',
+            data: this.$http.adornData({
+              userid: userid,
+              taskId: taskid,
+              status: status1,
+              token: this.$cookie.get('token')
+            })
+          }).then(({data}) => {
+            if (data.resultCode == 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.data.msg)
+            }
+          })
+        })
       }
     }
   }
@@ -463,7 +627,7 @@
     .el-col-24{
       margin-bottom: 10px;
       float:left;
-      width:25%;
+      width:35%;
     }
   }
   .totalDetail{
@@ -493,5 +657,13 @@
       float:left;
       width:25%;
     }
+  }
+  .mar5{
+    margin-right:5px;
+    margin-left:30%;
+  }
+  .back{
+    background: #fc5e6f;
+    color:#fff;
   }
 </style>

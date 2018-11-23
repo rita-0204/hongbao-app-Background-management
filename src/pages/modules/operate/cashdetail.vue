@@ -157,7 +157,7 @@
           label: '全部'
         },{
           value: 0,
-          label: '成功'
+          label: '打款成功'
         },{
           value: 1,
           label: '提现中'
@@ -166,7 +166,7 @@
           label: '打款失败'
         },{
           value: 3,
-          label: '审核中'
+          label: '审核失败'
         },{
           value: 4,
           label: '审核通过'
@@ -221,14 +221,14 @@
       },
       formatStatus: function (row, column, cellValue) {
         if (cellValue == "0"){
-          return '成功';
-        }else if (cellValue == "1"){
+          return '打款成功';
+        }else if (cellValue == "1"){  // 撤回
           return '提现中';
         }else if (cellValue == "2"){
           return '打款失败';
-        }else if (cellValue == "3"){
-          return '审核中';
-        }else if (cellValue == "4"){
+        }else if (cellValue == "3"){  // 拒绝
+          return '审核失败';
+        }else if (cellValue == "4"){  // 通过
           return '审核通过';
         }else if (cellValue == "5"){
           return '订单发送成功';

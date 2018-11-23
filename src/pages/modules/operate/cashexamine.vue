@@ -117,8 +117,18 @@
                 <el-button type="text" size="small" @click="powerHandle">拒绝</el-button>
               </div>
               <div v-else>
-                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,3)">通过</el-button>
-                <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,2)">拒绝</el-button>
+                <div v-if="scope.row.operation == 1">
+                  <!--<el-button type="text" size="small" @click="">通过</el-button>-->
+                  <!--<el-button type="text" size="small" @click="">拒绝</el-button>-->
+                </div>
+                <div v-if="scope.row.operation == 0">
+                  <el-button v-if="scope.row.status == 4" type="text" size="small" @click="UpdateHandle(scope.row.id,1)">撤回</el-button>
+                  <el-button v-else-if="scope.row.status == 3" type="text" size="small" @click="UpdateHandleCancel(scope.row)">原因</el-button>
+                  <div v-else>
+                    <el-button type="text" size="small" @click="UpdateHandle(scope.row.id,4)">通过</el-button>
+                    <el-button type="text" size="small" @click="UpdateHandleCancel(scope.row)">拒绝</el-button>
+                  </div>
+                </div>
               </div>
             </template>
           </el-table-column>
@@ -134,10 +144,12 @@
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
+    <update v-if="UpdateVisible" ref="Update" @refreshDataList="getDataList"></update>
   </div>
 </template>
 
 <script>
+  import Update from './cashexamine-update.vue'
   import moment from 'moment'
   export default {
     data () {
@@ -148,7 +160,7 @@
           label: '全部'
         },{
           value: 0,
-          label: '成功'
+          label: '打款成功'
         },{
           value: 1,
           label: '提现中'
@@ -157,7 +169,7 @@
           label: '打款失败'
         },{
           value: 3,
-          label: '审核中'
+          label: '审核失败'
         },{
           value: 4,
           label: '审核通过'
@@ -192,8 +204,12 @@
         dataListLoading: false,
         dataListSelections: [],
         activeName2: 'first',
-        typeName: 0
+        typeName: 0,
+        UpdateVisible: false
       }
+    },
+    components: {
+      Update
     },
     computed:{
       //得到管理员type
@@ -215,14 +231,14 @@
       },
       formatStatus: function (row, column, cellValue) {
         if (cellValue == "0"){
-          return '成功';
-        }else if (cellValue == "1"){
+          return '打款成功';
+        }else if (cellValue == "1"){  // 撤回
           return '提现中';
         }else if (cellValue == "2"){
           return '打款失败';
-        }else if (cellValue == "3"){
-          return '审核中';
-        }else if (cellValue == "4"){
+        }else if (cellValue == "3"){  // 拒绝
+          return '审核失败';
+        }else if (cellValue == "4"){  // 通过
           return '审核通过';
         }else if (cellValue == "5"){
           return '订单发送成功';
@@ -243,7 +259,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/mcn/get/app/record'),
+          url: this.$http.adornUrl('/mcn/get/user/record'),
           method: 'post',
           data: this.$http.adornData({
             type:this.type,
@@ -279,18 +295,31 @@
         this.pageIndex = val
         this.getDataList()
       },
+      // 新增 / 修改
+      UpdateHandleCancel (obj) {
+        this.UpdateVisible = true
+        this.$nextTick(() => {
+          this.$refs.Update.init(obj)
+        })
+      },
       UpdateHandle(id,status){
-        this.$confirm(`确定对[id=${id}]进行${status == 3 ? '通过' : '拒绝'}操作?`, '提示', {
+        var btnStatus = ''
+        if(status == 4){
+          btnStatus = '通过'
+        }else if(status == 1){
+          btnStatus = '撤回'
+        }
+        this.$confirm(`确定对[id=${id}]进行${btnStatus}操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/mcn/updateComment'),
+            url: this.$http.adornUrl('/mcn/up/user/record'),
             method: 'post',
             data: this.$http.adornData({
               id: id,
-              status: status,//2是不通过  3是通过
+              status: status,
               token: this.$cookie.get('token')
             })
           }).then(({data}) => {
