@@ -18,6 +18,13 @@ import VueCropper from 'vue-cropper'
 import VideoPlayer from 'vue-video-player'
 Vue.use(VideoPlayer);
 
+
+import VueQuillEditor from 'vue-quill-editor'
+Vue.use(VueQuillEditor);
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+
+
 Vue.use(ElementUI);
 Vue.use(VueCookie)
 Vue.use(Croppa)

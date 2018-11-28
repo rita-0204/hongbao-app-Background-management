@@ -46,7 +46,7 @@
           v-loading="dataListLoading"
           style="width: 100%;">
           <el-table-column
-            prop="mobile"
+            prop="nickname"
             label-class-name="colorLabel"
             header-align="center"
             align="center"
@@ -60,7 +60,7 @@
             label="手机号码">
           </el-table-column>
           <el-table-column
-            prop="nickname"
+            prop="username"
             label-class-name="colorLabel"
             header-align="center"
             align="center"
